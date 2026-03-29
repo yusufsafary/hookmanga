@@ -16,14 +16,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const response = await fetch('https://api.bluesminds.com/v1/agent/run', {
+    const response = await fetch('https://api.bluesminds.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // API key aman — diambil dari Environment Variables Vercel
         'Authorization': `Bearer ${process.env.BLUESMINDS_API_KEY}`
       },
-      body: JSON.stringify({ input: input.trim() })
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: input.trim() }],
+        max_tokens: 800
+      })
     });
 
     if (!response.ok) {
@@ -34,14 +37,8 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Ambil teks output — sesuaikan field ini jika struktur response Bluesminds berbeda
-    const output =
-      data.output ||
-      data.result ||
-      data.text ||
-      data.content ||
-      data.response ||
-      '';
+    // OpenAI-compatible response format
+    const output = data.choices?.[0]?.message?.content || '';
 
     if (!output) {
       console.error('Empty output from Bluesminds:', JSON.stringify(data));
