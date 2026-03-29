@@ -197,8 +197,21 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
 
+/* BUY BANNER */
+#buyBanner{position:fixed;top:0;left:0;right:0;z-index:210;height:38px;display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(90deg,#7c5cbf 0%,#ab9ff2 40%,#bf1a1a 100%);background-size:200% 100%;animation:bannerShift 6s ease infinite;font-family:var(--font-body);font-size:12.5px;font-weight:600;color:#fff;letter-spacing:.3px;text-decoration:none;overflow:hidden;flex-shrink:0}
+#buyBanner::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.1) 50%,transparent 100%);animation:bannerShine 2.8s ease infinite}
+@keyframes bannerShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes bannerShine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.banner-pill{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;letter-spacing:.6px;white-space:nowrap}
+.banner-ca{font-family:monospace;font-size:10.5px;background:rgba(0,0,0,.22);border-radius:6px;padding:2px 8px;letter-spacing:.4px;opacity:.9;white-space:nowrap}
+.banner-arrow{font-size:13px;transition:transform .2s}
+#buyBanner:hover .banner-arrow{transform:translateX(4px)}
+#bannerClose{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.65);font-size:16px;cursor:pointer;line-height:1;padding:4px 6px;transition:color .2s;z-index:1}
+#bannerClose:hover{color:#fff}
+
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:14px 36px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);background:rgba(250,248,246,0.93);border-bottom:1px solid var(--border)}
+nav{position:fixed;top:38px;left:0;right:0;z-index:200;padding:14px 36px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);background:rgba(250,248,246,0.93);border-bottom:1px solid var(--border)}
+nav.banner-hidden{top:0 !important}
 .nav-logo{font-family:var(--font-ja);font-size:20px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px;text-decoration:none;display:flex;align-items:baseline;gap:10px}
 .nav-logo-ja{font-family:var(--font-ja);font-size:12px;font-weight:400;letter-spacing:4px;background:none;-webkit-text-fill-color:var(--sub2);color:var(--sub2)}
 .nav-links{display:flex;gap:28px;list-style:none;align-items:center}
@@ -586,6 +599,15 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
   <a href="#partnership" onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);display:block">🤝 Partnership</a>
   <button onclick="openWalletModal();closeDrawer()" style="margin-top:20px;width:100%;padding:13px;background:linear-gradient(135deg,#ab9ff2,#7c5cbf);color:#fff;border:none;border-radius:10px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer">🔗 Connect Wallet</button>
 </div>
+
+<!-- BUY BANNER -->
+<a id="buyBanner" href="https://jup.ag/swap/SOL-N8h6H4KF2ubdFVeJgkxoYJtejeMm1Q2wVcy6bLeLory" target="_blank" rel="noopener noreferrer">
+  <span class="banner-pill">🪙 $HOOK LIVE</span>
+  <span>Beli $HOOK sekarang di Jupiter Exchange</span>
+  <span class="banner-ca">N8h6H4...Lory</span>
+  <span class="banner-arrow">→</span>
+  <button id="bannerClose" onclick="event.preventDefault();event.stopPropagation();document.getElementById('buyBanner').style.display='none';document.querySelector('nav').classList.add('banner-hidden');" title="Tutup">✕</button>
+</a>
 
 <!-- NAV -->
 <nav>
