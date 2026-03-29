@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>🔥 HookManga — Viral Manga Hook Generator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0f0f14;
+    --card: #1a1a22;
+    --card2: #13131a;
+    --grad: linear-gradient(135deg, #ff3c7e, #7a5cff);
+    --text: #ffffff;
+    --sub: #aaaaaa;
+    --border: rgba(255,255,255,0.07);
+    --radius: 14px;
+    --pink: #ff3c7e;
+    --purple: #7a5cff;
+    --glow-pink: 0 0 30px rgba(255,60,126,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-bottom: 60px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header { text-align: center; padding: 48px 0 32px; }
+
+  .logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .logo-icon {
+    font-size: 32px;
+    filter: drop-shadow(0 0 12px #ff3c7e88);
+    animation: flicker 3s infinite;
+  }
+
+  @keyframes flicker {
+    0%,100% { opacity: 1; }
+    92% { opacity: 1; }
+    93% { opacity: 0.7; }
+    94% { opacity: 1; }
+    97% { opacity: 0.8; }
+    98% { opacity: 1; }
+  }
+
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 2px;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+
+  .subtitle { font-size: 14px; color: var(--sub); letter-spacing: 0.5px; font-weight: 500; }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+
+  .input-group { display: flex; flex-direction: column; gap: 12px; }
+
+  .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sub);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+
+  input[type="text"]::placeholder { color: #555; }
+  input[type="text"]:focus {
+    border-color: var(--pink);
+    box-shadow: 0 0 0 3px rgba(255,60,126,0.12);
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 20px;
+    width: 100%;
+    transition: transform 0.12s, box-shadow 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary { background: var(--grad); color: #fff; box-shadow: var(--glow-pink); }
+  .btn-primary:hover { box-shadow: 0 0 40px rgba(255,60,126,0.4); }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.09); }
+
+  .btn-outline-pink {
+    background: transparent;
+    color: var(--pink);
+    border: 1.5px solid var(--pink);
+  }
+  .btn-outline-pink:hover { background: rgba(255,60,126,0.08); }
+
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+  .presets-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+  .preset-chip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    color: var(--sub);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 16px;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    flex: 1;
+    min-width: calc(50% - 4px);
+    text-align: center;
+  }
+
+  .preset-chip:active { transform: scale(0.96); }
+  .preset-chip:hover, .preset-chip.active {
+    background: rgba(255,60,126,0.12);
+    border-color: var(--pink);
+    color: var(--pink);
+  }
+
+  .pro-row { display: flex; gap: 10px; }
+
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    flex: 1;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.2s;
+    user-select: none;
+  }
+
+  .toggle-wrap.on { border-color: var(--pink); }
+  .toggle-label { font-size: 13px; font-weight: 600; color: var(--sub); flex: 1; }
+  .toggle-wrap.on .toggle-label { color: var(--pink); }
+
+  .toggle-pill {
+    width: 36px; height: 20px;
+    border-radius: 10px;
+    background: #333;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+
+  .toggle-wrap.on .toggle-pill { background: var(--grad); }
+
+  .toggle-pill::after {
+    content: '';
+    position: absolute;
+    width: 14px; height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    top: 3px; left: 3px;
+    transition: transform 0.2s;
+  }
+
+  .toggle-wrap.on .toggle-pill::after { transform: translateX(16px); }
+
+  .btn-char {
+    flex: 1;
+    background: rgba(122,92,255,0.12);
+    border: 1.5px solid var(--purple);
+    color: var(--purple);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    user-select: none;
+  }
+
+  .btn-char:active { transform: scale(0.96); }
+  .btn-char:hover { background: rgba(122,92,255,0.22); }
+
+  .output-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 14px;
+    display: none;
+    animation: fadeUp 0.35s ease;
+  }
+
+  .output-card.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .output-header { padding: 14px 20px 0; }
+
+  .output-badge {
+    background: var(--grad);
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+  }
+
+  .output-body {
+    padding: 16px 20px 20px;
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.75;
+    color: #e0e0e0;
+  }
+
+  .output-body .section-title {
+    color: var(--pink);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 14px;
+    margin-bottom: 4px;
+  }
+
+  .output-body .section-title:first-child { margin-top: 0; }
+  .output-body .section-content { color: var(--text); font-size: 15px; }
+
+  .loading-wrap {
+    padding: 30px 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    display: none;
+  }
+
+  .loading-wrap.visible { display: flex; }
+
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid rgba(255,60,126,0.2);
+    border-top-color: var(--pink);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .action-row { display: flex; gap: 10px; display: none; }
+  .action-row.visible { display: flex; }
+
+  .error-banner {
+    background: rgba(255,60,126,0.08);
+    border: 1px solid rgba(255,60,126,0.3);
+    border-radius: 10px;
+    color: var(--pink);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 16px;
+    text-align: center;
+    display: none;
+    animation: fadeUp 0.3s ease;
+    margin-bottom: 14px;
+  }
+
+  .error-banner.visible { display: block; }
+  .section { margin-bottom: 14px; }
+
+  footer { text-align: center; padding: 30px 0 0; font-size: 13px; color: #444; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="logo-wrap">
+      <span class="logo-icon">🔥</span>
+      <span class="logo-text">HookManga</span>
+    </div>
+    <p class="subtitle">Create viral manga hooks in seconds</p>
+  </header>
+
+  <div class="card section">
+    <div class="input-group">
+      <div>
+        <span class="label">Your Idea</span>
+        <input type="text" id="topicInput" placeholder="e.g. dark revenge anime story" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      </div>
+
+      <div>
+        <span class="label" style="margin-bottom:10px">Presets</span>
+        <div class="presets-row">
+          <button class="preset-chip" data-value="dark betrayal revenge story">🌑 Dark</button>
+          <button class="preset-chip" data-value="forbidden romance manga story">💘 Romance</button>
+          <button class="preset-chip" data-value="shonen tournament power-up arc">⚡ Shonen</button>
+          <button class="preset-chip" data-value="isekai overpowered hero reborn">🌀 Isekai</button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="generateBtn">
+        <span>⚡</span><span id="generateLabel">Generate Hook</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card section">
+    <span class="label" style="margin-bottom:12px">Pro Features</span>
+    <div class="pro-row">
+      <div class="toggle-wrap" id="viralToggle">
+        <span class="toggle-label">🚀 Viral Mode</span>
+        <div class="toggle-pill"></div>
+      </div>
+      <button class="btn-char" id="charModeBtn">
+        <span>🎭</span><span>Character</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="error-banner" id="errorBanner">⚠️ Error connecting API. Please try again.</div>
+
+  <div class="output-card" id="outputCard">
+    <div class="output-header">
+      <span class="output-badge" id="outputBadge">✨ Hook Ready</span>
+    </div>
+    <div class="loading-wrap" id="loadingWrap">
+      <div class="spinner"></div>
+      <span class="loading-text">⚡ Generating your viral hook...</span>
+    </div>
+    <div class="output-body" id="outputBody"></div>
+  </div>
+
+  <div class="action-row" id="actionRow">
+    <button class="btn btn-secondary" id="copyBtn">📋 Copy</button>
+    <button class="btn btn-outline-pink" id="regenBtn">🔄 Regenerate</button>
+  </div>
+
+  <footer>Built for creators 🚀</footer>
+
+</div>
+
+<script>
+(function() {
+  const topicInput  = document.getElementById('topicInput');
+  const generateBtn = document.getElementById('generateBtn');
+  const generateLbl = document.getElementById('generateLabel');
+  const outputCard  = document.getElementById('outputCard');
+  const outputBody  = document.getElementById('outputBody');
+  const outputBadge = document.getElementById('outputBadge');
+  const loadingWrap = document.getElementById('loadingWrap');
+  const actionRow   = document.getElementById('actionRow');
+  const copyBtn     = document.getElementById('copyBtn');
+  const regenBtn    = document.getElementById('regenBtn');
+  const errorBanner = document.getElementById('errorBanner');
+  const viralToggle = document.getElementById('viralToggle');
+  const charModeBtn = document.getElementById('charModeBtn');
+  const presetChips = document.querySelectorAll('.preset-chip');
+
+  let lastPrompt = '';
+  let isViral    = false;
+  let isCharMode = false;
+  let rawOutput  = '';
+
+  viralToggle.addEventListener('click', () => {
+    isViral = !isViral;
+    viralToggle.classList.toggle('on', isViral);
+  });
+
+  charModeBtn.addEventListener('click', () => {
+    isCharMode = !isCharMode;
+    charModeBtn.style.background = isCharMode
+      ? 'rgba(122,92,255,0.3)' : 'rgba(122,92,255,0.12)';
+    charModeBtn.querySelector('span:last-child').textContent =
+      isCharMode ? 'Story Mode' : 'Character';
+  });
+
+  presetChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      presetChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      topicInput.value = chip.dataset.value;
+      generate(chip.dataset.value);
+    });
+  });
+
+  generateBtn.addEventListener('click', () => {
+    const val = topicInput.value.trim();
+    if (!val) {
+      topicInput.focus();
+      topicInput.style.borderColor = 'var(--pink)';
+      setTimeout(() => { topicInput.style.borderColor = ''; }, 1200);
+      return;
+    }
+    generate(val);
+  });
+
+  copyBtn.addEventListener('click', () => {
+    if (!rawOutput) return;
+    navigator.clipboard.writeText(rawOutput).then(() => {
+      copyBtn.textContent = '✅ Copied!';
+      setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = rawOutput;
+      ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      copyBtn.textContent = '✅ Copied!';
+      setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+    });
+  });
+
+  regenBtn.addEventListener('click', () => { if (lastPrompt) generate(lastPrompt); });
+
+  async function generate(topic) {
+    lastPrompt = topic;
+    errorBanner.classList.remove('visible');
+    actionRow.classList.remove('visible');
+    outputCard.classList.add('visible');
+    outputBody.innerHTML = '';
+    loadingWrap.classList.add('visible');
+    generateBtn.disabled = true;
+    generateLbl.textContent = 'Generating...';
+
+    const viralSuffix = isViral
+      ? '\n\nMAKE IT extremely viral with a strong curiosity gap and emotional hook. Every line should demand the viewer to keep watching.'
+      : '';
+
+    const fullPrompt = (isCharMode
+      ? buildCharPrompt(topic)
+      : buildStoryPrompt(topic)) + viralSuffix;
+
+    try {
+      // ✅ Panggil backend kita sendiri — API key tidak terekspos ke user
+      const res = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input: fullPrompt })
+      });
+
+      if (!res.ok) throw new Error('API error');
+
+      const data = await res.json();
+      rawOutput = data.output || '';
+      if (!rawOutput) throw new Error('Empty response');
+
+      loadingWrap.classList.remove('visible');
+      renderOutput(rawOutput);
+      outputBadge.textContent = isCharMode ? '🎭 Character Ready' : '✨ Hook Ready';
+      actionRow.classList.add('visible');
+      outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    } catch (e) {
+      loadingWrap.classList.remove('visible');
+      outputCard.classList.remove('visible');
+      errorBanner.classList.add('visible');
+    } finally {
+      generateBtn.disabled = false;
+      generateLbl.textContent = 'Generate Hook';
+    }
+  }
+
+  function renderOutput(text) {
+    const lines = text.split('\n');
+    let html = '';
+    const headings = /^(Hook|Concept|Twist|Video Idea|Style|Name|Archetype|Power|Backstory|Fatal Flaw|Key Scene):?$/i;
+
+    lines.forEach(line => {
+      const t = line.trim();
+      if (!t) { html += '\n'; return; }
+      if (headings.test(t)) {
+        html += `<span class="section-title">${esc(t)}</span>`;
+      } else {
+        html += `<span class="section-content">${esc(t)}</span>\n`;
+      }
+    });
+
+    outputBody.innerHTML = html;
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function buildStoryPrompt(topic) {
+    return `You are HookManga AI. Generate a highly viral manga-style short story idea for TikTok/Reels.
+
+Topic: ${topic}
+
+Return EXACTLY in this format:
+
+Hook:
+[short emotional phrase, max 10 words]
+
+Concept:
+[1 sentence story idea]
+
+Twist:
+[unexpected plot twist]
+
+Video Idea:
+1. [scene]
+2. [scene]
+3. [scene]
+
+Style:
+- emotional
+- dramatic
+- curiosity-driven
+- TikTok optimized
+- anime storytelling`;
+  }
+
+  function buildCharPrompt(topic) {
+    return `You are HookManga AI. Generate a viral manga character concept for TikTok/Reels.
+
+Topic: ${topic}
+
+Return EXACTLY in this format:
+
+Name:
+[character name]
+
+Archetype:
+[1 sentence archetype]
+
+Power:
+[their unique power or ability]
+
+Backstory:
+[2 sentence tragic or dramatic backstory]
+
+Fatal Flaw:
+[what makes them compelling / vulnerable]
+
+Key Scene:
+1. [opening scene]
+2. [power reveal]
+3. [emotional twist]`;
+  }
+
+})();
+</script>
+</body>
+</html>
