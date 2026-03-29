@@ -9,89 +9,122 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&family=Shippori+Mincho:wght@400;700;800&display=swap" rel="stylesheet">
 
 <!-- ═══════════════════════════════════════
-     SUPABASE — Fill from Supabase Dashboard
-     Project Settings → API
+     WALLET CONFIG
+     Isi HOOK_TOKEN_MINT saat token $HOOK live
      ═══════════════════════════════════════ -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  // ▼ REPLACE WITH YOUR SUPABASE CONFIG ▼
-  const SUPABASE_URL  = 'https://letpyoccvmeeffkoheyh.supabase.co';
-  const SUPABASE_ANON = 'sb_publishable_-q9oFGgodKnlaKWD1-CpOA_rSag8zJH';
+  // ▼ ISI SAAT TOKEN $HOOK LIVE DI SOLANA ▼
+  const HOOK_TOKEN_MINT   = null;   // e.g. 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+  const HOOK_MIN_USD      = 50;     // minimum hold $50
+  const MAX_GENERATIONS   = 3;      // maks 3x generate per wallet
   // ▲ END CONFIG ▲
 
-  const _supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  // ── State wallet ──
+  window.__hmWallet = null;
 
-  // ── Cek session saat halaman dibuka ──
-  (async () => {
-    const { data: { session } } = await _supa.auth.getSession();
-    window.__hmUser = session?.user || null;
-    renderAuthState(window.__hmUser);
+  // ── Cek apakah Phantom tersedia ──
+  function hasPhantom() {
+    return typeof window.solana !== 'undefined' && window.solana.isPhantom;
+  }
 
-    // Kalau user baru balik dari magic link, session langsung terbaca
-    _supa.auth.onAuthStateChange((_event, session) => {
-      window.__hmUser = session?.user || null;
-      renderAuthState(window.__hmUser);
-      if (_event === 'SIGNED_IN') closeAuthModal();
-    });
-  })();
-
-  // ── Kirim Magic Link ──
-  window.hmLogin = async () => {
-    const emailEl = document.getElementById('authEmailInput');
-    const msgEl   = document.getElementById('authMsg');
-    const email   = emailEl?.value?.trim();
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      showAuthMsg('⚠️ Masukkan email yang valid.', 'error');
+  // ── Connect Phantom Wallet ──
+  window.connectWallet = async () => {
+    if (!hasPhantom()) {
+      window.open('https://phantom.app/', '_blank');
       return;
     }
-
-    showAuthMsg('⏳ Mengirim magic link...', 'info');
-
-    const { error } = await _supa.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: 'https://hookmanga.xyz' }
-    });
-
-    if (error) {
-      showAuthMsg('❌ Gagal kirim. Coba lagi.', 'error');
-    } else {
-      showAuthMsg('✅ Cek inbox kamu! Klik link di email untuk login.', 'success');
-      emailEl.value = '';
+    try {
+      const resp = await window.solana.connect();
+      const addr = resp.publicKey.toString();
+      window.__hmWallet = addr;
+      saveWalletState(addr);
+      renderWalletState(addr);
+      closeWalletModal();
+    } catch(e) {
+      console.error('Wallet connect error:', e);
     }
   };
 
-  // ── Sign Out ──
-  window.hmLogout = async () => {
-    await _supa.auth.signOut();
+  // ── Disconnect ──
+  window.disconnectWallet = async () => {
+    if (window.solana) await window.solana.disconnect().catch(()=>{});
+    window.__hmWallet = null;
+    localStorage.removeItem('hm_wallet');
+    renderWalletState(null);
   };
 
-  // ── Render nav state ──
-  function renderAuthState(user) {
-    const loginBtn  = document.getElementById('navLoginBtn');
-    const userChip  = document.getElementById('navUserChip');
-    const userAvatar= document.getElementById('navUserAvatar');
-    const userName  = document.getElementById('navUserName');
-    if (!loginBtn) return;
-    if (user) {
-      loginBtn.style.display = 'none';
-      userChip.style.display = 'flex';
-      userAvatar.src         = user.user_metadata?.avatar_url || '';
-      userName.textContent   = user.email?.split('@')[0] || 'User';
-    } else {
-      loginBtn.style.display = 'flex';
-      userChip.style.display = 'none';
+  // ── Simpan & restore wallet dari localStorage ──
+  function saveWalletState(addr) {
+    localStorage.setItem('hm_wallet', addr);
+  }
+  function restoreWalletState() {
+    const saved = localStorage.getItem('hm_wallet');
+    if (saved) {
+      window.__hmWallet = saved;
+      renderWalletState(saved);
     }
   }
 
-  // ── Helper pesan auth ──
-  function showAuthMsg(text, type) {
-    const el = document.getElementById('authMsg');
-    if (!el) return;
-    el.textContent = text;
-    el.style.display = 'block';
-    el.style.color = type === 'error' ? 'var(--red)' : type === 'success' ? '#16a34a' : 'var(--sub)';
+  // ── Cek jumlah generasi per wallet ──
+  function getGenCount(addr) {
+    const data = JSON.parse(localStorage.getItem('hm_usage') || '{}');
+    return data[addr] || 0;
   }
+  function incrementGenCount(addr) {
+    const data = JSON.parse(localStorage.getItem('hm_usage') || '{}');
+    data[addr] = (data[addr] || 0) + 1;
+    localStorage.setItem('hm_usage', JSON.stringify(data));
+  }
+
+  // ── Cek apakah wallet boleh generate ──
+  window.canGenerate = () => {
+    if (!window.__hmWallet) return { ok: false, reason: 'no_wallet' };
+    const count = getGenCount(window.__hmWallet);
+    if (count >= MAX_GENERATIONS) return { ok: false, reason: 'limit' };
+    // TODO: saat token live, tambah cek saldo $HOOK di sini
+    // if (HOOK_TOKEN_MINT) { ... cek saldo via Solana RPC ... }
+    return { ok: true, count };
+  };
+
+  // ── Dipanggil setelah sukses generate ──
+  window.recordGeneration = () => {
+    if (window.__hmWallet) incrementGenCount(window.__hmWallet);
+  };
+
+  // ── Render state navbar ──
+  function renderWalletState(addr) {
+    const connectBtn  = document.getElementById('navConnectBtn');
+    const walletChip  = document.getElementById('navWalletChip');
+    const walletAddr  = document.getElementById('navWalletAddr');
+    const walletCount = document.getElementById('navWalletCount');
+    if (!connectBtn) return;
+    if (addr) {
+      connectBtn.style.display = 'none';
+      walletChip.style.display = 'flex';
+      walletAddr.textContent   = addr.slice(0,4) + '...' + addr.slice(-4);
+      const left = MAX_GENERATIONS - getGenCount(addr);
+      walletCount.textContent  = left + ' gen left';
+      walletCount.style.color  = left === 0 ? 'var(--red)' : 'var(--sub)';
+    } else {
+      connectBtn.style.display = 'flex';
+      walletChip.style.display = 'none';
+    }
+  }
+
+  // ── Init saat halaman load ──
+  window.addEventListener('load', () => {
+    restoreWalletState();
+    // Auto reconnect kalau Phantom masih connected
+    if (hasPhantom() && window.solana.isConnected) {
+      window.solana.connect({ onlyIfTrusted: true })
+        .then(r => {
+          const addr = r.publicKey.toString();
+          window.__hmWallet = addr;
+          saveWalletState(addr);
+          renderWalletState(addr);
+        }).catch(()=>{});
+    }
+  });
 </script>
 
 <style>
@@ -457,50 +490,34 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
 </head>
 <body>
 
-<!-- AUTH MODAL -->
-<div class="auth-overlay" id="authOverlay">
+<!-- WALLET MODAL -->
+<div class="auth-overlay" id="walletModal">
   <div class="auth-modal">
-    <button class="auth-modal-close" onclick="closeAuthModal()">✕</button>
-    <span class="auth-modal-kamon">⛩</span>
-    <span class="auth-modal-ja">ログイン · Sign In</span>
-    <div class="auth-modal-title">Welcome to<br><span>HookManga</span></div>
-    <p class="auth-modal-sub">Masukkan email kamu — kami kirim magic link langsung ke inbox. Tanpa password.</p>
-
-    <div style="display:flex;flex-direction:column;gap:10px;width:100%">
-      <input
-        type="email"
-        id="authEmailInput"
-        placeholder="nama@email.com"
-        autocomplete="email"
-        style="width:100%;padding:13px 16px;border:1.5px solid var(--border2);border-radius:12px;font-family:var(--font-body);font-size:15px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s"
-        onfocus="this.style.borderColor='var(--red)'"
-        onblur="this.style.borderColor='var(--border2)'"
-        onkeydown="if(event.key==='Enter') window.hmLogin()"
-      />
-      <button class="btn-google" onclick="window.hmLogin()" style="justify-content:center;gap:10px;background:var(--grad);color:#fff;border:none">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        Kirim Magic Link
-      </button>
-    </div>
-
-    <p id="authMsg" style="display:none;margin-top:12px;font-size:13px;text-align:center;line-height:1.5"></p>
-    <button class="auth-skip" onclick="closeAuthModal()">Skip, generate tanpa login</button>
+    <button class="auth-modal-close" onclick="closeWalletModal()">✕</button>
+    <span class="auth-modal-kamon">🔗</span>
+    <span class="auth-modal-ja">ウォレット · Connect Wallet</span>
+    <div class="auth-modal-title">Connect Your<br><span>Solana Wallet</span></div>
+    <p class="auth-modal-sub">Hubungkan Phantom Wallet untuk mulai generate. Beta: maks <strong>3 generasi</strong> per wallet.</p>
+    <button class="btn-google" onclick="window.connectWallet()" style="background:linear-gradient(135deg,#ab9ff2,#7c5cbf);border:none;color:#fff;justify-content:center;gap:12px">
+      <svg width="20" height="20" viewBox="0 0 128 128" fill="none"><circle cx="64" cy="64" r="64" fill="#ab9ff2"/><path d="M110.5 64c0-6.1-4.9-11-11-11H63c-18.8 0-34 15.2-34 34s15.2 34 34 34h10.5c6.1 0 11-4.9 11-11s-4.9-11-11-11H63c-6.6 0-12-5.4-12-12s5.4-12 12-12h36.5c6.1 0 11-4.9 11-11z" fill="#fff" opacity=".9"/></svg>
+      Connect Phantom
+    </button>
+    <p style="margin-top:14px;font-size:12px;color:var(--sub2);line-height:1.6">Belum punya Phantom? <a href="https://phantom.app" target="_blank" style="color:var(--red);text-decoration:none;font-weight:600">Download di sini →</a></p>
   </div>
 </div>
 
-<!-- BETA GATE MODAL -->
+<!-- LIMIT MODAL -->
 <div class="beta-overlay" id="betaOverlay">
   <div class="beta-modal">
-    <div class="beta-seal">β</div>
-    <span class="beta-modal-ja">ベータ制限 · Beta Access</span>
-    <div class="beta-modal-title">$HOOK Token Required</div>
-    <p class="beta-modal-sub">During Beta Phase, generating requires holding a minimum of <strong>$50 in $HOOK tokens</strong> in your wallet. Each wallet + IP is entitled to <strong>5 project generations</strong>.</p>
-    <div class="beta-modal-note">🪙 Hold $50 $HOOK · 5 generations per wallet/IP</div>
-    <p style="font-size:13px;color:var(--sub);font-weight:300;line-height:1.6">Connect your Solana wallet to verify your $HOOK balance and unlock generation access during Beta Phase.</p>
+    <div class="beta-seal">3×</div>
+    <span class="beta-modal-ja">ベータ制限 · Beta Limit</span>
+    <div class="beta-modal-title">Limit Beta Tercapai</div>
+    <p class="beta-modal-sub">Wallet kamu sudah menggunakan <strong>3 generasi beta</strong>. Saat $HOOK token live, kamu bisa generate lebih banyak dengan hold minimal <strong>$50 $HOOK</strong>.</p>
+    <div class="beta-modal-note">🪙 Hold $50 $HOOK · Unlimited generations coming</div>
     <div style="display:flex;gap:10px;margin-top:24px;flex-wrap:wrap">
-      <button onclick="connectWalletAndVerify()" class="btn btn-primary" style="flex:1;font-size:13px;padding:12px">🔗 Connect Wallet</button>
-      <a href="https://x.com/arthousebase" target="_blank" class="btn btn-ghost" style="flex:1;font-size:13px;padding:12px">𝕏 Follow Updates</a>
-      <button onclick="document.getElementById('betaOverlay').classList.remove('open')" class="btn btn-ghost" style="flex:1;font-size:13px;padding:12px">Close</button>
+      <a href="https://x.com/hookmanga" target="_blank" class="btn btn-primary" style="flex:1;font-size:13px;padding:12px">𝕏 Follow Updates</a>
+      <a href="https://t.me/hookmanga" target="_blank" class="btn btn-ghost" style="flex:1;font-size:13px;padding:12px">✈️ Telegram</a>
+      <button onclick="document.getElementById('betaOverlay').classList.remove('open')" class="btn btn-ghost" style="flex:1;font-size:13px;padding:12px">Tutup</button>
     </div>
   </div>
 </div>
@@ -514,7 +531,7 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
   <a href="#team"       onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);display:block">👥 Team</a>
   <a href="#whitepaper" onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);display:block">📄 Whitepaper</a>
   <a href="#about"      onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;display:block">ℹ️ About</a>
-  <button onclick="openAuthModal();closeDrawer()" style="margin-top:20px;width:100%;padding:13px;background:var(--grad);color:#fff;border:none;border-radius:10px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer">Sign In · サインイン</button>
+  <button onclick="openWalletModal();closeDrawer()" style="margin-top:20px;width:100%;padding:13px;background:linear-gradient(135deg,#ab9ff2,#7c5cbf);color:#fff;border:none;border-radius:10px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer">🔗 Connect Wallet</button>
 </div>
 
 <!-- NAV -->
@@ -529,14 +546,14 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
     <li><a href="#about">About</a></li>
   </ul>
   <div class="nav-right">
-    <button id="navLoginBtn" onclick="openAuthModal()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Sign In
+    <button id="navConnectBtn" onclick="openWalletModal()" style="display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ab9ff2,#7c5cbf);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s">
+      🔗 Connect Wallet
     </button>
-    <div id="navUserChip">
-      <img id="navUserAvatar" src="" alt="avatar"/>
-      <span id="navUserName"></span>
-      <button class="btn-logout" onclick="window.hmLogout()">Sign Out</button>
+    <div id="navWalletChip" style="display:none;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--border2);border-radius:30px;padding:5px 14px 5px 10px">
+      <span style="width:8px;height:8px;border-radius:50%;background:#16a34a;flex-shrink:0"></span>
+      <span id="navWalletAddr" style="font-size:13px;font-weight:600;color:var(--text);font-family:monospace"></span>
+      <span id="navWalletCount" style="font-size:11px;font-weight:600;color:var(--sub)"></span>
+      <button class="btn-logout" onclick="window.disconnectWallet()">Disconnect</button>
     </div>
     <button class="nav-mobile-btn" id="hamburgerBtn" onclick="toggleDrawer()" aria-label="Menu">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -1011,34 +1028,11 @@ function closeDrawer(){
   if(overlay) overlay.style.display='none';
 }
 
-// ── WALLET CONNECT (PLACEHOLDER — Phase Beta) ──
-window.connectWalletAndVerify = async function(){
-  // TODO: Integrate Phantom/Solflare wallet adapter
-  // Check: wallet holds >= $50 USD equivalent in $HOOK
-  // Check: walletAddress + userIP <= 5 generations used
-  // For now: show placeholder alert
-  alert('🔗 Wallet connect coming soon!\n\nPhase Beta: Connect your Solana wallet holding $50+ in $HOOK to unlock 5 project generations.\n\nVerification is per wallet address + IP.');
-};
-
-
-function openAuthModal(){ document.getElementById('authOverlay').classList.add('open') }
-function closeAuthModal(){ document.getElementById('authOverlay').classList.remove('open') }
-document.getElementById('authOverlay').addEventListener('click',function(e){if(e.target===this)closeAuthModal()});
+// ── WALLET MODAL ──
+function openWalletModal(){ document.getElementById('walletModal').classList.add('open') }
+function closeWalletModal(){ document.getElementById('walletModal').classList.remove('open') }
+document.getElementById('walletModal').addEventListener('click',function(e){if(e.target===this)closeWalletModal()});
 document.getElementById('betaOverlay').addEventListener('click',function(e){if(e.target===this)this.classList.remove('open')});
-
-// ── BETA GATE (localStorage) ──
-const BETA_KEY = 'hm_beta_used_v1';
-function hasUsedBeta(){ return localStorage.getItem(BETA_KEY)==='1' }
-function markBetaUsed(){ localStorage.setItem(BETA_KEY,'1') }
-
-function lockBeta(){
-  const btn = document.getElementById('generateBtn');
-  const lbl = document.getElementById('generateLabel');
-  btn.classList.add('btn-used');
-  lbl.textContent = '🔒 Hold $50 $HOOK to Generate · ウォレット確認必要';
-  document.getElementById('captchaWrap').classList.remove('visible');
-  btn.onclick = () => document.getElementById('betaOverlay').classList.add('open');
-}
 
 // ── APP LOGIC ──
 (function(){
@@ -1060,11 +1054,36 @@ function lockBeta(){
 
   let isViral=false, isChar=false, rawOutput='';
 
-  // On load: check beta state
-  window.addEventListener('load',()=>{
-    if(hasUsedBeta()) lockBeta();
-    else captchaWrap.classList.add('visible');
+  // ── Render tombol generate sesuai state wallet ──
+  function refreshGenerateBtn() {
+    if (!window.__hmWallet) {
+      generateLbl.textContent = '🔗 Connect Wallet to Generate';
+      generateBtn.classList.remove('btn-used');
+      captchaWrap.classList.remove('visible');
+      return;
+    }
+    const check = window.canGenerate();
+    if (!check.ok && check.reason === 'limit') {
+      generateBtn.classList.add('btn-used');
+      generateLbl.textContent = '🔒 Beta Limit Reached · 3/3';
+      captchaWrap.classList.remove('visible');
+    } else {
+      generateBtn.classList.remove('btn-used');
+      const left = MAX_GENERATIONS - (check.count || 0);
+      generateLbl.textContent = `⚡ Generate Hook · 生成 (${left} left)`;
+      captchaWrap.classList.add('visible');
+    }
+  }
+
+  // Refresh setiap kali wallet berubah
+  const _origRender = window.renderWalletState || (()=>{});
+  window.addEventListener('load', () => {
+    setTimeout(refreshGenerateBtn, 300);
   });
+  const _walletObserver = setInterval(()=>{
+    const currentWallet = localStorage.getItem('hm_wallet');
+    if (currentWallet !== window.__hmWallet) refreshGenerateBtn();
+  }, 500);
 
   viralToggle.addEventListener('click',()=>{
     isViral=!isViral;
@@ -1086,8 +1105,18 @@ function lockBeta(){
   });
 
   generateBtn.addEventListener('click',()=>{
-    // Already used — lockBeta sets its own onclick, so this only fires if not locked
-    if(hasUsedBeta()){ document.getElementById('betaOverlay').classList.add('open'); return; }
+    // Belum connect wallet
+    if (!window.__hmWallet) {
+      openWalletModal();
+      return;
+    }
+
+    // Cek limit
+    const check = window.canGenerate();
+    if (!check.ok) {
+      document.getElementById('betaOverlay').classList.add('open');
+      return;
+    }
 
     const v=topicInput.value.trim();
     if(!v){
@@ -1146,16 +1175,23 @@ function lockBeta(){
       actionRow.classList.add('visible');
       outputCard.scrollIntoView({behavior:'smooth',block:'nearest'});
 
-      // Mark beta used and lock
-      markBetaUsed();
-      lockBeta();
+      // Catat generasi ke localStorage
+      window.recordGeneration();
+      generateBtn.disabled=false;
+      refreshGenerateBtn();
+
+      // Cek apakah sudah habis
+      const afterCheck = window.canGenerate();
+      if (!afterCheck.ok) {
+        setTimeout(()=> document.getElementById('betaOverlay').classList.add('open'), 1200);
+      }
 
     }catch(e){
       loadingWrap.classList.remove('visible');
       outputCard.classList.remove('visible');
       errBanner.classList.add('visible');
       generateBtn.disabled=false;
-      generateLbl.textContent='Generate Hook · 生成';
+      refreshGenerateBtn();
     }
   }
 
