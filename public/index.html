@@ -486,6 +486,22 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
   #samplePanels{grid-template-columns:1fr!important}
   .hero-title{font-size:clamp(34px,9.5vw,52px)!important}
 }
+
+/* PARTNERSHIP */
+#partnership{padding:110px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.partner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:60px}
+.partner-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px 24px;transition:border-color .2s,transform .2s,box-shadow .2s;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.partner-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);opacity:0;transition:opacity .2s}
+.partner-card:hover{border-color:var(--red-border);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.partner-card:hover::before{opacity:1}
+.partner-icon{font-size:26px;margin-bottom:14px}
+.partner-category{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--red);margin-bottom:6px;display:block}
+.partner-title{font-family:var(--font-ja);font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px}
+.partner-desc{font-size:13px;color:var(--sub);line-height:1.65;font-weight:300}
+.partner-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.partner-tag{background:var(--red-muted);border:1px solid var(--red-border);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--red);font-weight:600}
+@media(max-width:768px){.partner-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.partner-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -530,7 +546,8 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
   <a href="#samples"    onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);display:block">🖼 Samples</a>
   <a href="#team"       onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);display:block">👥 Team</a>
   <a href="#whitepaper" onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);display:block">📄 Whitepaper</a>
-  <a href="#about"      onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;display:block">ℹ️ About</a>
+  <a href="#about"      onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);display:block">ℹ️ About</a>
+  <a href="#partnership" onclick="closeDrawer()" style="padding:13px 0;color:var(--text);font-size:15px;font-weight:600;text-decoration:none;border-bottom:1px solid var(--border);display:block">🤝 Kemitraan</a>
   <button onclick="openWalletModal();closeDrawer()" style="margin-top:20px;width:100%;padding:13px;background:linear-gradient(135deg,#ab9ff2,#7c5cbf);color:#fff;border:none;border-radius:10px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer">🔗 Connect Wallet</button>
 </div>
 
@@ -544,7 +561,7 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
     <li><a href="#team">Team</a></li>
     <li><a href="#whitepaper">Whitepaper</a></li>
     <li><a href="#about">About</a></li>
-  </ul>
+    <li><a href="#partnership">Kemitraan</a></li>
   <div class="nav-right">
     <button id="navConnectBtn" onclick="openWalletModal()" style="display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ab9ff2,#7c5cbf);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s">
       🔗 Connect Wallet
@@ -935,6 +952,76 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
           <div class="about-stat-row"><span class="about-stat-label">Blockchain</span><span class="about-stat-val">Solana</span></div>
           <div class="about-stat-row"><span class="about-stat-label">Listed On</span><span class="about-stat-val">Orynth.dev</span></div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POTENTIAL KEMITRAAN -->
+<section id="partnership">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-tag">Partnership · パートナーシップ</span>
+      <span class="section-title-ja">潜在的なパートナー · Potential Partners</span>
+      <h2 class="section-title">Potential<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Kemitraan</span></h2>
+      <p class="section-sub">Kami terbuka untuk kolaborasi dengan ekosistem Manga, Web3, dan kreator konten yang ingin bersama membangun masa depan storytelling digital.</p>
+    </div>
+    <div class="partner-grid reveal">
+
+      <div class="partner-card">
+        <div class="partner-icon">📚</div>
+        <span class="partner-category">Manga Platform</span>
+        <div class="partner-title">Webtoon &amp; Tapas</div>
+        <p class="partner-desc">Integrasi langsung dengan platform distribusi manga digital — bantu kreator publish cerita yang dibuat dengan HookManga hook langsung ke audiens jutaan pembaca.</p>
+        <div class="partner-tags"><span class="partner-tag">Distribution</span><span class="partner-tag">Content</span></div>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-icon">🔗</div>
+        <span class="partner-category">Web3 · DeFi</span>
+        <div class="partner-title">Solana Ecosystem</div>
+        <p class="partner-desc">Kolaborasi dengan proyek NFT manga, launchpad Solana, dan marketplace Web3 untuk memperluas utility token $HOOK dan membuka pasar baru bagi kreator.</p>
+        <div class="partner-tags"><span class="partner-tag">NFT</span><span class="partner-tag">Solana</span><span class="partner-tag">DeFi</span></div>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-icon">🎌</div>
+        <span class="partner-category">Anime Studio</span>
+        <div class="partner-title">Indie Anime Producers</div>
+        <p class="partner-desc">Studio animasi indie yang mencari skrip dan konsep cerita viral. HookManga menjadi pipeline awal untuk menemukan IP original berpotensi tinggi.</p>
+        <div class="partner-tags"><span class="partner-tag">IP</span><span class="partner-tag">Animation</span></div>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-icon">🎥</div>
+        <span class="partner-category">Creator Economy</span>
+        <div class="partner-title">TikTok &amp; YouTube MCN</div>
+        <p class="partner-desc">Multi-Channel Network dan talent agency kreator konten anime. Bundle HookManga sebagai tool eksklusif untuk kreator di jaringan mereka.</p>
+        <div class="partner-tags"><span class="partner-tag">TikTok</span><span class="partner-tag">Shorts</span><span class="partner-tag">MCN</span></div>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-icon">🪙</div>
+        <span class="partner-category">Web3 · Token</span>
+        <div class="partner-title">DEX &amp; CEX Listing</div>
+        <p class="partner-desc">Exchange desentralisasi dan sentralisasi untuk listing $HOOK token dengan liquidity pool yang kuat, membuka akses ke komunitas trader dan investor Web3.</p>
+        <div class="partner-tags"><span class="partner-tag">DEX</span><span class="partner-tag">Liquidity</span><span class="partner-tag">$HOOK</span></div>
+      </div>
+
+      <div class="partner-card">
+        <div class="partner-icon">🤖</div>
+        <span class="partner-category">AI &amp; Tech</span>
+        <div class="partner-title">AI Tools &amp; Infrastructure</div>
+        <p class="partner-desc">Integrasi dengan tools AI lain seperti image generator, voice-over AI, atau video editor otomatis untuk membangun pipeline kreasi konten manga end-to-end.</p>
+        <div class="partner-tags"><span class="partner-tag">AI</span><span class="partner-tag">Automation</span><span class="partner-tag">Pipeline</span></div>
+      </div>
+
+    </div>
+    <div class="reveal" style="text-align:center;margin-top:48px">
+      <p style="font-size:14px;color:var(--sub);margin-bottom:20px;font-weight:300">Tertarik untuk bermitra? Hubungi kami di Twitter atau Telegram.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="https://x.com/hookmanga" target="_blank" class="btn btn-primary" style="font-size:13px;padding:12px 24px">𝕏 DM di Twitter</a>
+        <a href="https://t.me/hookmanga" target="_blank" class="btn btn-ghost" style="font-size:13px;padding:12px 24px">✈️ Telegram</a>
       </div>
     </div>
   </div>
