@@ -14,7 +14,7 @@
      ═══════════════════════════════════════ -->
 <script>
   // ▼ ISI SAAT TOKEN $HOOK LIVE DI SOLANA ▼
-  const HOOK_TOKEN_MINT   = null;   // e.g. 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+  const HOOK_TOKEN_MINT   = 'N8h6H4KF2ubdFVeJgkxoYJtejeMm1Q2wVcy6bLeLory';   // $HOOK token live on Solana
   const HOOK_MIN_USD      = 50;     // minimum hold $50
   const MAX_GENERATIONS   = 3;      // maks 3x generate per wallet
   // ▲ END CONFIG ▲
@@ -76,13 +76,49 @@
     localStorage.setItem('hm_usage', JSON.stringify(data));
   }
 
+  // ── Cek saldo $HOOK token via Solana RPC ──
+  async function getHookBalanceUSD(walletAddr) {
+    try {
+      const rpcUrl = 'https://api.mainnet-beta.solana.com';
+      const res = await fetch(rpcUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0', id: 1,
+          method: 'getTokenAccountsByOwner',
+          params: [
+            walletAddr,
+            { mint: HOOK_TOKEN_MINT },
+            { encoding: 'jsonParsed' }
+          ]
+        })
+      });
+      const data = await res.json();
+      const accounts = data?.result?.value || [];
+      if (accounts.length === 0) return 0;
+      const info = accounts[0].account.data.parsed.info.tokenAmount;
+      const tokenAmount = parseFloat(info.uiAmount || 0);
+      const priceRes = await fetch('https://price.jup.ag/v6/price?ids=' + HOOK_TOKEN_MINT);
+      const priceData = await priceRes.json();
+      const priceUSD = priceData?.data?.[HOOK_TOKEN_MINT]?.price || 0;
+      return tokenAmount * priceUSD;
+    } catch(e) {
+      console.warn('Hook balance check failed:', e);
+      return null;
+    }
+  }
+
   // ── Cek apakah wallet boleh generate ──
-  window.canGenerate = () => {
+  window.canGenerate = async () => {
     if (!window.__hmWallet) return { ok: false, reason: 'no_wallet' };
     const count = getGenCount(window.__hmWallet);
     if (count >= MAX_GENERATIONS) return { ok: false, reason: 'limit' };
-    // TODO: saat token live, tambah cek saldo $HOOK di sini
-    // if (HOOK_TOKEN_MINT) { ... cek saldo via Solana RPC ... }
+    if (HOOK_TOKEN_MINT) {
+      const balanceUSD = await getHookBalanceUSD(window.__hmWallet);
+      if (balanceUSD !== null && balanceUSD < HOOK_MIN_USD) {
+        return { ok: false, reason: 'insufficient_hook', balanceUSD };
+      }
+    }
     return { ok: true, count };
   };
 
@@ -1155,15 +1191,19 @@ document.getElementById('betaOverlay').addEventListener('click',function(e){if(e
   let isViral=false, isChar=false, rawOutput='';
 
   // ── Render tombol generate sesuai state wallet ──
-  function refreshGenerateBtn() {
+  async function refreshGenerateBtn() {
     if (!window.__hmWallet) {
       generateLbl.textContent = '🔗 Connect Wallet to Generate';
       generateBtn.classList.remove('btn-used');
       captchaWrap.classList.remove('visible');
       return;
     }
-    const check = window.canGenerate();
-    if (!check.ok && check.reason === 'limit') {
+    const check = await window.canGenerate();
+    if (!check.ok && check.reason === 'insufficient_hook') {
+      generateBtn.classList.add('btn-used');
+      generateLbl.textContent = `🔒 Hold min $${HOOK_MIN_USD} $HOOK to Generate`;
+      captchaWrap.classList.remove('visible');
+    } else if (!check.ok && check.reason === 'limit') {
       generateBtn.classList.add('btn-used');
       generateLbl.textContent = '🔒 Beta Limit Reached · 3/3';
       captchaWrap.classList.remove('visible');
@@ -1204,7 +1244,7 @@ document.getElementById('betaOverlay').addEventListener('click',function(e){if(e
     });
   });
 
-  generateBtn.addEventListener('click',()=>{
+  generateBtn.addEventListener('click', async ()=>{
     // Belum connect wallet
     if (!window.__hmWallet) {
       openWalletModal();
@@ -1212,7 +1252,7 @@ document.getElementById('betaOverlay').addEventListener('click',function(e){if(e
     }
 
     // Cek limit
-    const check = window.canGenerate();
+    const check = await window.canGenerate();
     if (!check.ok) {
       document.getElementById('betaOverlay').classList.add('open');
       return;
@@ -1281,7 +1321,7 @@ document.getElementById('betaOverlay').addEventListener('click',function(e){if(e
       refreshGenerateBtn();
 
       // Cek apakah sudah habis
-      const afterCheck = window.canGenerate();
+      const afterCheck = await window.canGenerate();
       if (!afterCheck.ok) {
         setTimeout(()=> document.getElementById('betaOverlay').classList.add('open'), 1200);
       }
