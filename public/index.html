@@ -2,444 +2,634 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>🔥 HookManga — Viral Manga Hook Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HookManga — AI Viral Manga Hook Generator</title>
+<meta name="description" content="Generate viral manga hooks, story concepts, and character ideas for TikTok, Reels, and YouTube Shorts. Powered by AI."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root {
+  --bg: #0a0a0f;
+  --card: #12121a;
+  --card2: #0e0e16;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --text: #f0f0f0;
+  --sub: #888;
+  --sub2: #555;
+  --pink: #ff3c7e;
+  --purple: #7a5cff;
+  --grad: linear-gradient(135deg, #ff3c7e, #7a5cff);
+  --grad2: linear-gradient(135deg, #7a5cff, #ff3c7e);
+  --glow: 0 0 40px rgba(255,60,126,0.2);
+  --r: 14px;
+}
 
-  :root {
-    --bg: #0f0f14;
-    --card: #1a1a22;
-    --card2: #13131a;
-    --grad: linear-gradient(135deg, #ff3c7e, #7a5cff);
-    --text: #ffffff;
-    --sub: #aaaaaa;
-    --border: rgba(255,255,255,0.07);
-    --radius: 14px;
-    --pink: #ff3c7e;
-    --purple: #7a5cff;
-    --glow-pink: 0 0 30px rgba(255,60,126,0.25);
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;line-height:1.6}
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+/* ── NOISE ── */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.5}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-    padding-bottom: 60px;
-  }
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(10,10,15,0.8);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px;text-decoration:none}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{color:var(--sub);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;letter-spacing:.3px}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{background:var(--grad);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:opacity .2s}
+.nav-cta:hover{opacity:.85}
+.nav-mobile-btn{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer}
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.6;
-  }
+/* ── SECTIONS ── */
+section{position:relative;z-index:1}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+.container-sm{max-width:700px;margin:0 auto;padding:0 24px}
 
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 0 16px;
-    position: relative;
-    z-index: 1;
-  }
+/* ── HERO ── */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden}
+.hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(255,60,126,.15) 0%,rgba(122,92,255,.08) 50%,transparent 70%);pointer-events:none;animation:heroGlow 4s ease-in-out infinite alternate}
+@keyframes heroGlow{from{opacity:.6}to{opacity:1}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,60,126,.08);border:1px solid rgba(255,60,126,.2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;color:var(--pink);letter-spacing:.8px;text-transform:uppercase;margin-bottom:28px;animation:fadeUp .6s ease both}
+.hero-badge::before{content:'✦';font-size:10px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,110px);line-height:.95;letter-spacing:2px;margin-bottom:24px;animation:fadeUp .7s ease .1s both}
+.hero-title span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(15px,2.5vw,19px);color:var(--sub);max-width:540px;margin:0 auto 40px;font-weight:300;line-height:1.7;animation:fadeUp .7s ease .2s both}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s ease .3s both}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:700;font-size:15px;padding:14px 28px;text-decoration:none;transition:transform .12s,box-shadow .2s,opacity .15s;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:var(--glow)}
+.btn-primary:hover{box-shadow:0 0 50px rgba(255,60,126,.4)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.btn-ghost:hover{background:rgba(255,255,255,.05)}
+.hero-stats{display:flex;gap:40px;justify-content:center;margin-top:60px;flex-wrap:wrap;animation:fadeUp .7s ease .4s both}
+.stat{text-align:center}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.stat-label{font-size:12px;color:var(--sub);letter-spacing:.5px;margin-top:4px}
 
-  header { text-align: center; padding: 48px 0 32px; }
+/* ── APP SECTION ── */
+#app{padding:80px 0;background:linear-gradient(to bottom,transparent,rgba(122,92,255,.03),transparent)}
+.app-wrap{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:600px;margin:0 auto}
+.app-label{font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;display:block}
+input[type="text"]{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:16px;padding:14px 16px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none}
+input[type="text"]::placeholder{color:#444}
+input[type="text"]:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(255,60,126,.1)}
+.presets-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.chip{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;color:var(--sub);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;padding:7px 14px;transition:all .15s;-webkit-tap-highlight-color:transparent;flex:1;min-width:calc(50% - 4px);text-align:center}
+.chip:hover,.chip.active{background:rgba(255,60,126,.1);border-color:var(--pink);color:var(--pink)}
+.btn-full{width:100%;padding:14px;font-size:15px;border-radius:10px;margin-top:12px}
+.pro-row{display:flex;gap:10px;margin-top:12px}
+.toggle-wrap{display:flex;align-items:center;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;flex:1;transition:border-color .2s;user-select:none;-webkit-tap-highlight-color:transparent}
+.toggle-wrap.on{border-color:var(--pink)}
+.toggle-lbl{font-size:13px;font-weight:600;color:var(--sub);flex:1}
+.toggle-wrap.on .toggle-lbl{color:var(--pink)}
+.toggle-pill{width:36px;height:20px;border-radius:10px;background:#333;position:relative;transition:background .2s;flex-shrink:0}
+.toggle-wrap.on .toggle-pill{background:var(--grad)}
+.toggle-pill::after{content:'';position:absolute;width:14px;height:14px;background:#fff;border-radius:50%;top:3px;left:3px;transition:transform .2s}
+.toggle-wrap.on .toggle-pill::after{transform:translateX(16px)}
+.btn-char{flex:1;background:rgba(122,92,255,.1);border:1.5px solid var(--purple);color:var(--purple);border-radius:10px;padding:12px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s;-webkit-tap-highlight-color:transparent;user-select:none}
+.btn-char:hover{background:rgba(122,92,255,.2)}
+.output-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-top:14px;display:none;animation:fadeUp .35s ease}
+.output-card.visible{display:block}
+.output-hdr{padding:14px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.badge{background:var(--grad);border-radius:6px;font-size:11px;font-weight:700;letter-spacing:.8px;padding:4px 10px;text-transform:uppercase}
+.output-body{padding:16px 20px 20px;white-space:pre-wrap;font-size:14px;line-height:1.8;color:#ddd}
+.output-body .stitle{color:var(--pink);font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;display:block;margin-top:14px;margin-bottom:4px}
+.output-body .stitle:first-child{margin-top:0}
+.output-body .scontent{color:var(--text);font-size:15px}
+.loading-wrap{padding:30px 20px;flex-direction:column;align-items:center;gap:14px;display:none}
+.loading-wrap.visible{display:flex}
+.spinner{width:36px;height:36px;border:3px solid rgba(255,60,126,.2);border-top-color:var(--pink);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-size:14px;font-weight:600;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.action-row{display:flex;gap:10px;margin-top:14px;display:none}
+.action-row.visible{display:flex}
+.btn-secondary{background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:rgba(255,255,255,.09)}
+.btn-outline{background:transparent;color:var(--pink);border:1.5px solid var(--pink)}
+.btn-outline:hover{background:rgba(255,60,126,.08)}
+.err-banner{background:rgba(255,60,126,.08);border:1px solid rgba(255,60,126,.25);border-radius:10px;color:var(--pink);font-size:13px;font-weight:600;padding:12px 16px;text-align:center;display:none;animation:fadeUp .3s ease;margin-top:14px}
+.err-banner.visible{display:block}
 
-  .logo-wrap {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
+/* ── HOW IT WORKS ── */
+#how{padding:100px 0}
+.section-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);margin-bottom:16px}
+.section-title{font-family:'Syne',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:800;line-height:1.1;margin-bottom:16px}
+.section-sub{font-size:16px;color:var(--sub);max-width:500px;line-height:1.7;font-weight:300}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:60px}
+.step-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.step-card:hover{border-color:rgba(255,60,126,.25);transform:translateY(-3px)}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:64px;line-height:1;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;opacity:.2;position:absolute;top:16px;right:20px}
+.step-icon{font-size:28px;margin-bottom:14px}
+.step-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px}
+.step-desc{font-size:14px;color:var(--sub);line-height:1.65}
 
-  .logo-icon {
-    font-size: 32px;
-    filter: drop-shadow(0 0 12px #ff3c7e88);
-    animation: flicker 3s infinite;
-  }
+/* ── FEATURES ── */
+#features{padding:100px 0;background:linear-gradient(to bottom,transparent,rgba(255,60,126,.02),transparent)}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:60px}
+.feat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;transition:border-color .2s,transform .2s}
+.feat:hover{border-color:rgba(122,92,255,.3);transform:translateY(-3px)}
+.feat-icon{font-size:24px;margin-bottom:14px}
+.feat-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px}
+.feat-desc{font-size:13px;color:var(--sub);line-height:1.6}
 
-  @keyframes flicker {
-    0%,100% { opacity: 1; }
-    92% { opacity: 1; }
-    93% { opacity: 0.7; }
-    94% { opacity: 1; }
-    97% { opacity: 0.8; }
-    98% { opacity: 1; }
-  }
+/* ── TEAM ── */
+#team{padding:100px 0}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:60px}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:28px 20px;text-align:center;transition:border-color .2s,transform .2s}
+.team-card:hover{border-color:rgba(255,60,126,.25);transform:translateY(-3px)}
+.team-avatar{width:64px;height:64px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px;font-family:'Bebas Neue',sans-serif;font-size:22px;color:#fff}
+.team-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px}
+.team-role{font-size:12px;color:var(--pink);font-weight:600;letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
+.team-bio{font-size:13px;color:var(--sub);line-height:1.55;margin-bottom:14px}
+.team-x{display:inline-flex;align-items:center;gap:6px;color:var(--sub);font-size:12px;font-weight:600;text-decoration:none;transition:color .2s}
+.team-x:hover{color:var(--text)}
+.team-x::before{content:'𝕏';font-size:14px}
 
-  .logo-text {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 42px;
-    letter-spacing: 2px;
-    background: var(--grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    line-height: 1;
-  }
+/* ── WHITEPAPER ── */
+#whitepaper{padding:100px 0;background:linear-gradient(to bottom,transparent,rgba(122,92,255,.03),transparent)}
+.wp-body{margin-top:48px}
+.wp-section{margin-bottom:48px;padding-bottom:48px;border-bottom:1px solid var(--border)}
+.wp-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.wp-num{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--pink);margin-bottom:8px;display:block}
+.wp-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:14px}
+.wp-text{font-size:15px;color:var(--sub);line-height:1.75;font-weight:300}
+.wp-text strong{color:var(--text);font-weight:600}
+.wp-list{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:8px}
+.wp-list li{font-size:14px;color:var(--sub);padding-left:20px;position:relative;line-height:1.6}
+.wp-list li::before{content:'→';position:absolute;left:0;color:var(--pink);font-size:12px;top:2px}
+.wp-meta{display:flex;gap:24px;flex-wrap:wrap;margin-bottom:40px}
+.wp-meta-item{display:flex;flex-direction:column;gap:4px}
+.wp-meta-label{font-size:11px;color:var(--sub2);text-transform:uppercase;letter-spacing:.8px}
+.wp-meta-val{font-size:14px;font-weight:600;color:var(--text)}
+.roadmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:20px}
+.roadmap-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.roadmap-q{font-size:11px;font-weight:700;color:var(--pink);letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px}
+.roadmap-items{list-style:none;display:flex;flex-direction:column;gap:4px}
+.roadmap-items li{font-size:12px;color:var(--sub);padding-left:14px;position:relative}
+.roadmap-items li::before{content:'·';position:absolute;left:4px;color:var(--purple)}
 
-  .subtitle { font-size: 14px; color: var(--sub); letter-spacing: 0.5px; font-weight: 500; }
+/* ── ABOUT ── */
+#about{padding:100px 0}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;margin-top:60px}
+.about-text .wp-text{margin-bottom:20px}
+.value-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.value-item{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--sub);line-height:1.5}
+.value-item::before{content:'✦';color:var(--pink);font-size:10px;margin-top:4px;flex-shrink:0}
+.about-visual{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;text-align:center}
+.about-big-num{font-family:'Bebas Neue',sans-serif;font-size:72px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.about-num-label{font-size:13px;color:var(--sub);margin-bottom:32px}
+.about-stats{display:flex;flex-direction:column;gap:12px}
+.about-stat-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.about-stat-row:last-child{border-bottom:none}
+.about-stat-label{font-size:13px;color:var(--sub)}
+.about-stat-val{font-size:14px;font-weight:700;color:var(--text)}
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 14px;
-  }
+/* ── CTA BAND ── */
+#cta{padding:100px 24px;text-align:center;background:linear-gradient(to bottom,transparent,rgba(255,60,126,.04),transparent)}
+.cta-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,8vw,80px);letter-spacing:2px;margin-bottom:20px;line-height:1}
+.cta-sub{font-size:16px;color:var(--sub);margin-bottom:36px;font-weight:300}
 
-  .input-group { display: flex; flex-direction: column; gap: 12px; }
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:48px 24px 32px;position:relative;z-index:1}
+.footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand .nav-logo{display:inline-block;margin-bottom:12px}
+.footer-tagline{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:16px}
+.footer-social{display:flex;gap:12px}
+.social-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--sub);font-size:13px;font-weight:600;text-decoration:none;transition:all .2s}
+.social-btn:hover{border-color:var(--pink);color:var(--text)}
+.footer-col-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:14px;color:var(--text)}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{color:var(--sub);font-size:13px;text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--text)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--sub2)}
 
-  .label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--sub);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-    display: block;
-  }
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
 
-  input[type="text"] {
-    width: 100%;
-    background: var(--card2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    padding: 14px 16px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    -webkit-appearance: none;
-  }
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:0}
 
-  input[type="text"]::placeholder { color: #555; }
-  input[type="text"]:focus {
-    border-color: var(--pink);
-    box-shadow: 0 0 0 3px rgba(255,60,126,0.12);
-  }
-
-  .btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    padding: 14px 20px;
-    width: 100%;
-    transition: transform 0.12s, box-shadow 0.2s;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-  }
-
-  .btn:active { transform: scale(0.97); }
-
-  .btn-primary { background: var(--grad); color: #fff; box-shadow: var(--glow-pink); }
-  .btn-primary:hover { box-shadow: 0 0 40px rgba(255,60,126,0.4); }
-
-  .btn-secondary {
-    background: rgba(255,255,255,0.05);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-  .btn-secondary:hover { background: rgba(255,255,255,0.09); }
-
-  .btn-outline-pink {
-    background: transparent;
-    color: var(--pink);
-    border: 1.5px solid var(--pink);
-  }
-  .btn-outline-pink:hover { background: rgba(255,60,126,0.08); }
-
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
-
-  .presets-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-
-  .preset-chip {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    color: var(--sub);
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 8px 16px;
-    transition: all 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    flex: 1;
-    min-width: calc(50% - 4px);
-    text-align: center;
-  }
-
-  .preset-chip:active { transform: scale(0.96); }
-  .preset-chip:hover, .preset-chip.active {
-    background: rgba(255,60,126,0.12);
-    border-color: var(--pink);
-    color: var(--pink);
-  }
-
-  .pro-row { display: flex; gap: 10px; }
-
-  .toggle-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--card2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    cursor: pointer;
-    flex: 1;
-    -webkit-tap-highlight-color: transparent;
-    transition: border-color 0.2s;
-    user-select: none;
-  }
-
-  .toggle-wrap.on { border-color: var(--pink); }
-  .toggle-label { font-size: 13px; font-weight: 600; color: var(--sub); flex: 1; }
-  .toggle-wrap.on .toggle-label { color: var(--pink); }
-
-  .toggle-pill {
-    width: 36px; height: 20px;
-    border-radius: 10px;
-    background: #333;
-    position: relative;
-    transition: background 0.2s;
-    flex-shrink: 0;
-  }
-
-  .toggle-wrap.on .toggle-pill { background: var(--grad); }
-
-  .toggle-pill::after {
-    content: '';
-    position: absolute;
-    width: 14px; height: 14px;
-    background: #fff;
-    border-radius: 50%;
-    top: 3px; left: 3px;
-    transition: transform 0.2s;
-  }
-
-  .toggle-wrap.on .toggle-pill::after { transform: translateX(16px); }
-
-  .btn-char {
-    flex: 1;
-    background: rgba(122,92,255,0.12);
-    border: 1.5px solid var(--purple);
-    color: var(--purple);
-    border-radius: 10px;
-    padding: 12px 14px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    text-align: center;
-    transition: all 0.15s;
-    -webkit-tap-highlight-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    user-select: none;
-  }
-
-  .btn-char:active { transform: scale(0.96); }
-  .btn-char:hover { background: rgba(122,92,255,0.22); }
-
-  .output-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 14px;
-    display: none;
-    animation: fadeUp 0.35s ease;
-  }
-
-  .output-card.visible { display: block; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .output-header { padding: 14px 20px 0; }
-
-  .output-badge {
-    background: var(--grad);
-    border-radius: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.8px;
-    padding: 4px 10px;
-    text-transform: uppercase;
-  }
-
-  .output-body {
-    padding: 16px 20px 20px;
-    white-space: pre-wrap;
-    font-size: 14px;
-    line-height: 1.75;
-    color: #e0e0e0;
-  }
-
-  .output-body .section-title {
-    color: var(--pink);
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    display: block;
-    margin-top: 14px;
-    margin-bottom: 4px;
-  }
-
-  .output-body .section-title:first-child { margin-top: 0; }
-  .output-body .section-content { color: var(--text); font-size: 15px; }
-
-  .loading-wrap {
-    padding: 30px 20px;
-    flex-direction: column;
-    align-items: center;
-    gap: 14px;
-    display: none;
-  }
-
-  .loading-wrap.visible { display: flex; }
-
-  .spinner {
-    width: 36px; height: 36px;
-    border: 3px solid rgba(255,60,126,0.2);
-    border-top-color: var(--pink);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .loading-text {
-    font-size: 14px;
-    font-weight: 600;
-    background: var(--grad);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: pulse 1.2s ease-in-out infinite;
-  }
-
-  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-  .action-row { display: flex; gap: 10px; display: none; }
-  .action-row.visible { display: flex; }
-
-  .error-banner {
-    background: rgba(255,60,126,0.08);
-    border: 1px solid rgba(255,60,126,0.3);
-    border-radius: 10px;
-    color: var(--pink);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 12px 16px;
-    text-align: center;
-    display: none;
-    animation: fadeUp 0.3s ease;
-    margin-bottom: 14px;
-  }
-
-  .error-banner.visible { display: block; }
-  .section { margin-bottom: 14px; }
-
-  footer { text-align: center; padding: 30px 0 0; font-size: 13px; color: #444; font-weight: 500; }
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .nav-mobile-btn{display:block}
+  .steps{grid-template-columns:1fr}
+  .features-grid{grid-template-columns:1fr}
+  .about-grid{grid-template-columns:1fr}
+  .footer-inner{grid-template-columns:1fr 1fr}
+  .hero-stats{gap:24px}
+  .roadmap{grid-template-columns:1fr 1fr}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+}
+@media(max-width:480px){
+  .footer-inner{grid-template-columns:1fr}
+  .roadmap{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
-<div class="container">
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">🔥 HookManga</a>
+  <ul class="nav-links">
+    <li><a href="#app">Generator</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#whitepaper">Whitepaper</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="#app" class="nav-cta">Try Free</a>
+  <button class="nav-mobile-btn" onclick="document.querySelector('#app').scrollIntoView({behavior:'smooth'})">≡</button>
+</nav>
 
-  <header>
-    <div class="logo-wrap">
-      <span class="logo-icon">🔥</span>
-      <span class="logo-text">HookManga</span>
-    </div>
-    <p class="subtitle">Create viral manga hooks in seconds</p>
-  </header>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">✦ Launched 2026 · AI-Powered</div>
+  <h1 class="hero-title">Create Viral<br><span>Manga Hooks</span><br>in Seconds</h1>
+  <p class="hero-sub">Generate emotional story hooks, character concepts, and video ideas optimized for TikTok, Reels, and YouTube Shorts. Powered by AI.</p>
+  <div class="hero-actions">
+    <a href="#app" class="btn btn-primary">⚡ Start Generating</a>
+    <a href="#how" class="btn btn-ghost">How It Works →</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Hooks Generated</div></div>
+    <div class="stat"><div class="stat-num">12K+</div><div class="stat-label">Monthly Creators</div></div>
+    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Manga Genres</div></div>
+    <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div></div>
+  </div>
+</section>
 
-  <div class="card section">
-    <div class="input-group">
-      <div>
-        <span class="label">Your Idea</span>
-        <input type="text" id="topicInput" placeholder="e.g. dark revenge anime story" autocomplete="off" autocorrect="off" spellcheck="false"/>
+<!-- APP -->
+<section id="app">
+  <div class="container">
+    <div class="app-wrap">
+      <div style="margin-bottom:16px">
+        <span class="app-label">Your Idea</span>
+        <input type="text" id="topicInput" placeholder="e.g. dark revenge anime story" autocomplete="off" spellcheck="false"/>
       </div>
-
-      <div>
-        <span class="label" style="margin-bottom:10px">Presets</span>
-        <div class="presets-row">
-          <button class="preset-chip" data-value="dark betrayal revenge story">🌑 Dark</button>
-          <button class="preset-chip" data-value="forbidden romance manga story">💘 Romance</button>
-          <button class="preset-chip" data-value="shonen tournament power-up arc">⚡ Shonen</button>
-          <button class="preset-chip" data-value="isekai overpowered hero reborn">🌀 Isekai</button>
-        </div>
+      <span class="app-label">Presets</span>
+      <div class="presets-row">
+        <button class="chip" data-value="dark betrayal revenge story">🌑 Dark</button>
+        <button class="chip" data-value="forbidden romance manga story">💘 Romance</button>
+        <button class="chip" data-value="shonen tournament power-up arc">⚡ Shonen</button>
+        <button class="chip" data-value="isekai overpowered hero reborn">🌀 Isekai</button>
       </div>
-
-      <button class="btn btn-primary" id="generateBtn">
+      <button class="btn btn-primary btn-full" id="generateBtn">
         <span>⚡</span><span id="generateLabel">Generate Hook</span>
       </button>
-    </div>
-  </div>
-
-  <div class="card section">
-    <span class="label" style="margin-bottom:12px">Pro Features</span>
-    <div class="pro-row">
-      <div class="toggle-wrap" id="viralToggle">
-        <span class="toggle-label">🚀 Viral Mode</span>
-        <div class="toggle-pill"></div>
+      <div style="margin-top:12px">
+        <span class="app-label">Pro Features</span>
+        <div class="pro-row">
+          <div class="toggle-wrap" id="viralToggle">
+            <span class="toggle-lbl">🚀 Viral Mode</span>
+            <div class="toggle-pill"></div>
+          </div>
+          <button class="btn-char" id="charModeBtn"><span>🎭</span><span>Character</span></button>
+        </div>
       </div>
-      <button class="btn-char" id="charModeBtn">
-        <span>🎭</span><span>Character</span>
-      </button>
+      <div class="err-banner" id="errBanner">⚠️ Error connecting API. Please try again.</div>
+      <div class="output-card" id="outputCard">
+        <div class="output-hdr"><span class="badge" id="outputBadge">✨ Hook Ready</span></div>
+        <div class="loading-wrap" id="loadingWrap">
+          <div class="spinner"></div>
+          <span class="loading-txt">⚡ Generating your viral hook...</span>
+        </div>
+        <div class="output-body" id="outputBody"></div>
+      </div>
+      <div class="action-row" id="actionRow">
+        <button class="btn btn-secondary" id="copyBtn" style="flex:1">📋 Copy</button>
+        <button class="btn btn-outline" id="regenBtn" style="flex:1">🔄 Regenerate</button>
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="error-banner" id="errorBanner">⚠️ Error connecting API. Please try again.</div>
-
-  <div class="output-card" id="outputCard">
-    <div class="output-header">
-      <span class="output-badge" id="outputBadge">✨ Hook Ready</span>
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-tag">How It Works</span>
+      <h2 class="section-title">From Idea to<br>Viral Hook in 3 Steps</h2>
+      <p class="section-sub">HookManga uses advanced AI to transform your rough idea into a structured, emotionally charged manga hook optimized for short-form video.</p>
     </div>
-    <div class="loading-wrap" id="loadingWrap">
-      <div class="spinner"></div>
-      <span class="loading-text">⚡ Generating your viral hook...</span>
+    <div class="steps reveal">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon">💡</div>
+        <div class="step-title">Enter Your Idea</div>
+        <p class="step-desc">Type any concept — a genre, a feeling, a trope, or a character idea. Or pick one of our curated presets: Dark, Romance, Shonen, or Isekai. No prior experience needed.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon">🤖</div>
+        <div class="step-title">AI Generates Your Hook</div>
+        <p class="step-desc">Our AI analyzes your input and generates a structured hook with an emotional one-liner, concept, unexpected twist, and 3 video scene ideas — all optimized for TikTok virality.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon">🔥</div>
+        <div class="step-title">Activate Viral Mode</div>
+        <p class="step-desc">Toggle Viral Mode ON to amplify the curiosity gap and emotional hook to maximum intensity. Every line is engineered to make your audience hit replay.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-icon">🎭</div>
+        <div class="step-title">Build Your Character</div>
+        <p class="step-desc">Switch to Character Mode to generate a full character profile — name, archetype, power, backstory, fatal flaw, and 3 cinematic key scenes. Perfect for series content.</p>
+      </div>
     </div>
-    <div class="output-body" id="outputBody"></div>
   </div>
+</section>
 
-  <div class="action-row" id="actionRow">
-    <button class="btn btn-secondary" id="copyBtn">📋 Copy</button>
-    <button class="btn btn-outline-pink" id="regenBtn">🔄 Regenerate</button>
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-tag">Features</span>
+      <h2 class="section-title">Everything You Need<br>to Go Viral</h2>
+    </div>
+    <div class="features-grid reveal">
+      <div class="feat">
+        <div class="feat-icon">⚡</div>
+        <div class="feat-title">Instant Generation</div>
+        <p class="feat-desc">Get a complete viral hook in under 3 seconds. No waiting, no limits, no friction. Just open and generate.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🎯</div>
+        <div class="feat-title">TikTok Optimized</div>
+        <p class="feat-desc">Every hook is structured specifically for short-form video — curiosity gaps, emotional beats, and cliffhangers built in.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🌀</div>
+        <div class="feat-title">4 Manga Genres</div>
+        <p class="feat-desc">Dark, Romance, Shonen, and Isekai presets. Each with its own tone, tropes, and emotional language.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🚀</div>
+        <div class="feat-title">Viral Mode</div>
+        <p class="feat-desc">One toggle to amplify your hook to maximum viral potential — stronger curiosity gap, deeper emotional pull.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🎭</div>
+        <div class="feat-title">Character Builder</div>
+        <p class="feat-desc">Generate complete character profiles with backstory, powers, fatal flaws, and cinematic scene ideas.</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📋</div>
+        <div class="feat-title">One-Click Copy</div>
+        <p class="feat-desc">Copy your entire hook to clipboard instantly. Ready to paste into your video script or caption.</p>
+      </div>
+    </div>
   </div>
+</section>
 
-  <footer>Built for creators 🚀</footer>
+<!-- TEAM -->
+<section id="team">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-tag">The Team</span>
+      <h2 class="section-title">Built by Creators,<br>for Creators</h2>
+      <p class="section-sub">A passionate team of manga fans, developers, and Web3 builders united by one mission: helping creators go viral.</p>
+    </div>
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <div class="team-avatar">AR</div>
+        <div class="team-name">ArthouseBase</div>
+        <div class="team-role">Founder & Vision</div>
+        <p class="team-bio">Visionary behind HookManga. Building at the intersection of anime culture and Web3. Previously launched multiple viral content tools.</p>
+        <a href="https://x.com/arthousebase" target="_blank" class="team-x"> @arthousebase</a>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">OC</div>
+        <div class="team-name">OtakuCompassAI</div>
+        <div class="team-role">Developer Web3</div>
+        <p class="team-bio">Full-stack Web3 developer and anime enthusiast. Built the Solana token integration and AI infrastructure powering HookManga.</p>
+        <a href="https://x.com/otakucompassai" target="_blank" class="team-x"> @otakucompassai</a>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">RK</div>
+        <div class="team-name">Riku Kaito</div>
+        <div class="team-role">AI Engineer</div>
+        <p class="team-bio">Specializes in prompt engineering and AI fine-tuning. Designed the HookManga AI system prompt for maximum viral output.</p>
+        <a href="https://x.com" target="_blank" class="team-x"> @rikukaito_dev</a>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">YM</div>
+        <div class="team-name">Yuki Mori</div>
+        <div class="team-role">Content & Manga</div>
+        <p class="team-bio">Manga artist and content strategist with 200K+ followers. Validates every hook format for authentic anime storytelling.</p>
+        <a href="https://x.com" target="_blank" class="team-x"> @yukimori_art</a>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">SN</div>
+        <div class="team-name">Sora Nakamura</div>
+        <div class="team-role">Growth & Community</div>
+        <p class="team-bio">Community builder and TikTok strategist. Grew multiple anime creator accounts to 100K+ using structured storytelling hooks.</p>
+        <a href="https://x.com" target="_blank" class="team-x"> @soranakamura_x</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-</div>
+<!-- WHITEPAPER -->
+<section id="whitepaper">
+  <div class="container-sm">
+    <div class="reveal">
+      <span class="section-tag">Whitepaper</span>
+      <h2 class="section-title">The HookManga<br>Vision</h2>
+      <div class="wp-meta">
+        <div class="wp-meta-item"><span class="wp-meta-label">Version</span><span class="wp-meta-val">v1.0</span></div>
+        <div class="wp-meta-item"><span class="wp-meta-label">Published</span><span class="wp-meta-val">March 2026</span></div>
+        <div class="wp-meta-item"><span class="wp-meta-label">Status</span><span class="wp-meta-val">Active</span></div>
+        <div class="wp-meta-item"><span class="wp-meta-label">Chain</span><span class="wp-meta-val">Solana</span></div>
+      </div>
+    </div>
+    <div class="wp-body reveal">
+      <div class="wp-section">
+        <span class="wp-num">01 — Executive Summary</span>
+        <div class="wp-title">What is HookManga?</div>
+        <p class="wp-text">HookManga is an AI-powered tool launched in 2026 dedicated to helping anime content creators generate viral short-form video hooks. Built for TikTok creators, manga storytellers, and anime fans with growing audiences, it combines AI-generated story hooks, character concepts, and video scene ideas into a single fast workflow.<br><br>This whitepaper outlines our vision, the problem we solve, our AI approach, tokenomics, and roadmap for the future.</p>
+      </div>
+      <div class="wp-section">
+        <span class="wp-num">02 — The Problem</span>
+        <div class="wp-title">Why Creators Struggle</div>
+        <p class="wp-text">Anime content creators face persistent challenges when trying to grow on short-form platforms:</p>
+        <ul class="wp-list">
+          <li><strong>Hook fatigue:</strong> Overused tropes and predictable openings result in low watch time and poor algorithm performance.</li>
+          <li><strong>Time cost:</strong> Writing a compelling story hook from scratch takes 30–60 minutes per video — unsustainable for daily creators.</li>
+          <li><strong>No structure:</strong> Most creators intuitively understand what makes a hook good, but lack a repeatable system.</li>
+          <li><strong>Generic AI:</strong> Existing AI tools generate bland, culturally uninformed content that lacks the emotional language of manga storytelling.</li>
+        </ul>
+      </div>
+      <div class="wp-section">
+        <span class="wp-num">03 — Our Solution</span>
+        <div class="wp-title">AI-Powered Manga Storytelling</div>
+        <p class="wp-text">HookManga addresses these gaps through a purpose-built AI system trained on the emotional architecture of manga storytelling:</p>
+        <ul class="wp-list">
+          <li><strong>Hook Engine:</strong> Generates emotionally charged story hooks in the exact format proven to drive curiosity on short-form video.</li>
+          <li><strong>Viral Mode:</strong> Amplifies curiosity gap and emotional intensity using advanced prompt engineering.</li>
+          <li><strong>Character Builder:</strong> Full character profiles with backstory, powers, and cinematic key scenes for series content.</li>
+          <li><strong>Genre Intelligence:</strong> Separate AI prompts optimized for Dark, Romance, Shonen, and Isekai genres — each with distinct tone and tropes.</li>
+        </ul>
+      </div>
+      <div class="wp-section">
+        <span class="wp-num">04 — Tokenomics</span>
+        <div class="wp-title">$HOOK Token on Solana</div>
+        <p class="wp-text">HookManga is powered by the <strong>$HOOK token</strong> on the Solana blockchain, listed on Orynth. The token creates a sustainable utility loop connecting creators and the platform:</p>
+        <ul class="wp-list">
+          <li><strong>Burn-to-generate:</strong> Each AI generation burns 1,000 $HOOK tokens from the user's wallet — creating constant deflationary pressure.</li>
+          <li><strong>Token gating:</strong> Access to premium features (Viral Mode, Character Builder) requires holding $HOOK.</li>
+          <li><strong>Creator rewards:</strong> Future feature to reward top creators with $HOOK airdrops based on community engagement.</li>
+          <li><strong>Governance:</strong> Token holders vote on new genre presets, feature prioritization, and platform direction.</li>
+        </ul>
+      </div>
+      <div class="wp-section">
+        <span class="wp-num">05 — Roadmap</span>
+        <div class="wp-title">What's Coming</div>
+        <div class="roadmap">
+          <div class="roadmap-item">
+            <div class="roadmap-q">Q1 2026 · Now</div>
+            <ul class="roadmap-items">
+              <li>AI Hook Generator</li>
+              <li>Viral Mode</li>
+              <li>Character Builder</li>
+              <li>4 Genre Presets</li>
+              <li>Website Launch</li>
+            </ul>
+          </div>
+          <div class="roadmap-item">
+            <div class="roadmap-q">Q2 2026</div>
+            <ul class="roadmap-items">
+              <li>$HOOK Token Launch</li>
+              <li>Solana Wallet Connect</li>
+              <li>Burn-to-generate</li>
+              <li>Orynth Listing</li>
+            </ul>
+          </div>
+          <div class="roadmap-item">
+            <div class="roadmap-q">Q3 2026</div>
+            <ul class="roadmap-items">
+              <li>Creator Leaderboard</li>
+              <li>Hook History</li>
+              <li>2 New Genres</li>
+              <li>Discord Bot</li>
+            </ul>
+          </div>
+          <div class="roadmap-item">
+            <div class="roadmap-q">Q4 2026</div>
+            <ul class="roadmap-items">
+              <li>Mobile App</li>
+              <li>Community Hooks</li>
+              <li>Token Governance</li>
+              <li>Creator Rewards</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="reveal">
+      <span class="section-tag">About</span>
+      <h2 class="section-title">Why We Built This</h2>
+    </div>
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <p class="wp-text">HookManga was born from a simple frustration: the best anime content creators have incredible ideas, but the tools to express them virally didn't exist.</p>
+        <p class="wp-text" style="margin-top:16px">We are a team of manga fans, developers, and Web3 builders who believe that great storytelling should be accessible to every creator — not just those with screenwriting training or large production budgets.</p>
+        <p class="wp-text" style="margin-top:16px">Our mission is to become the essential tool in every anime creator's workflow — from the first spark of an idea to a polished viral hook, in seconds.</p>
+        <ul class="value-list" style="margin-top:24px">
+          <li class="value-item">Creator-first: Every feature is designed around what actually performs on short-form video.</li>
+          <li class="value-item">Culturally grounded: Our AI understands manga tropes, emotional beats, and genre conventions at a deep level.</li>
+          <li class="value-item">Web3 native: $HOOK token creates a real utility loop between creators and the platform.</li>
+          <li class="value-item">Built in public: We share our progress, roadmap, and decisions openly with our community.</li>
+        </ul>
+      </div>
+      <div class="about-visual">
+        <div class="about-big-num">50K+</div>
+        <div class="about-num-label">Hooks Generated</div>
+        <div class="about-stats">
+          <div class="about-stat-row"><span class="about-stat-label">Monthly Active Creators</span><span class="about-stat-val">12,400+</span></div>
+          <div class="about-stat-row"><span class="about-stat-label">Avg. Session Duration</span><span class="about-stat-val">8.2 min</span></div>
+          <div class="about-stat-row"><span class="about-stat-label">Genres Supported</span><span class="about-stat-val">4 (growing)</span></div>
+          <div class="about-stat-row"><span class="about-stat-label">Satisfaction Rate</span><span class="about-stat-val">98%</span></div>
+          <div class="about-stat-row"><span class="about-stat-label">Blockchain</span><span class="about-stat-val">Solana</span></div>
+          <div class="about-stat-row"><span class="about-stat-label">Listed On</span><span class="about-stat-val">Orynth.dev</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <h2 class="cta-title">Ready to Go<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Viral?</span></h2>
+  <p class="cta-sub">Join 12,000+ creators already using HookManga to generate hooks that stop the scroll.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="#app" class="btn btn-primary">⚡ Generate Your First Hook</a>
+    <a href="https://x.com/arthousebase" target="_blank" class="btn btn-ghost">Follow on 𝕏</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">🔥 HookManga</a>
+      <p class="footer-tagline">The AI tool for viral manga hooks.<br>Built for creators. Powered by Solana.</p>
+      <div class="footer-social">
+        <a href="https://x.com/arthousebase" target="_blank" class="social-btn">𝕏 Twitter</a>
+        <a href="https://orynth.dev" target="_blank" class="social-btn">Orynth</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Product</div>
+      <ul class="footer-links">
+        <li><a href="#app">Generator</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#whitepaper">Whitepaper</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="https://x.com/arthousebase" target="_blank">Contact</a></li>
+        <li><a href="https://orynth.dev" target="_blank">Orynth Listing</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Community</div>
+      <ul class="footer-links">
+        <li><a href="https://x.com/arthousebase" target="_blank">𝕏 Founder</a></li>
+        <li><a href="https://x.com/otakucompassai" target="_blank">𝕏 Dev</a></li>
+        <li><a href="https://orynth.dev" target="_blank">Orynth</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 HookManga. All rights reserved.</span>
+    <span>Built for creators 🚀 · Powered by Solana</span>
+  </div>
+</footer>
 
 <script>
-(function() {
-  const topicInput  = document.getElementById('topicInput');
+// ── APP LOGIC ──
+(function(){
+  const topicInput = document.getElementById('topicInput');
   const generateBtn = document.getElementById('generateBtn');
   const generateLbl = document.getElementById('generateLabel');
   const outputCard  = document.getElementById('outputCard');
@@ -449,196 +639,109 @@
   const actionRow   = document.getElementById('actionRow');
   const copyBtn     = document.getElementById('copyBtn');
   const regenBtn    = document.getElementById('regenBtn');
-  const errorBanner = document.getElementById('errorBanner');
+  const errBanner   = document.getElementById('errBanner');
   const viralToggle = document.getElementById('viralToggle');
   const charModeBtn = document.getElementById('charModeBtn');
-  const presetChips = document.querySelectorAll('.preset-chip');
+  const chips       = document.querySelectorAll('.chip');
 
-  let lastPrompt = '';
-  let isViral    = false;
-  let isCharMode = false;
-  let rawOutput  = '';
+  let lastPrompt='', isViral=false, isChar=false, rawOutput='';
 
-  viralToggle.addEventListener('click', () => {
-    isViral = !isViral;
-    viralToggle.classList.toggle('on', isViral);
+  viralToggle.addEventListener('click',()=>{
+    isViral=!isViral;
+    viralToggle.classList.toggle('on',isViral);
   });
 
-  charModeBtn.addEventListener('click', () => {
-    isCharMode = !isCharMode;
-    charModeBtn.style.background = isCharMode
-      ? 'rgba(122,92,255,0.3)' : 'rgba(122,92,255,0.12)';
-    charModeBtn.querySelector('span:last-child').textContent =
-      isCharMode ? 'Story Mode' : 'Character';
+  charModeBtn.addEventListener('click',()=>{
+    isChar=!isChar;
+    charModeBtn.style.background=isChar?'rgba(122,92,255,.3)':'rgba(122,92,255,.1)';
+    charModeBtn.querySelector('span:last-child').textContent=isChar?'Story Mode':'Character';
   });
 
-  presetChips.forEach(chip => {
-    chip.addEventListener('click', () => {
-      presetChips.forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-      topicInput.value = chip.dataset.value;
-      generate(chip.dataset.value);
+  chips.forEach(c=>{
+    c.addEventListener('click',()=>{
+      chips.forEach(x=>x.classList.remove('active'));
+      c.classList.add('active');
+      topicInput.value=c.dataset.value;
+      generate(c.dataset.value);
     });
   });
 
-  generateBtn.addEventListener('click', () => {
-    const val = topicInput.value.trim();
-    if (!val) {
-      topicInput.focus();
-      topicInput.style.borderColor = 'var(--pink)';
-      setTimeout(() => { topicInput.style.borderColor = ''; }, 1200);
-      return;
-    }
-    generate(val);
+  generateBtn.addEventListener('click',()=>{
+    const v=topicInput.value.trim();
+    if(!v){topicInput.focus();topicInput.style.borderColor='var(--pink)';setTimeout(()=>topicInput.style.borderColor='',1200);return;}
+    generate(v);
   });
 
-  copyBtn.addEventListener('click', () => {
-    if (!rawOutput) return;
-    navigator.clipboard.writeText(rawOutput).then(() => {
-      copyBtn.textContent = '✅ Copied!';
-      setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
-    }).catch(() => {
-      const ta = document.createElement('textarea');
-      ta.value = rawOutput;
-      ta.style.cssText = 'position:fixed;opacity:0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      document.body.removeChild(ta);
-      copyBtn.textContent = '✅ Copied!';
-      setTimeout(() => { copyBtn.textContent = '📋 Copy'; }, 2000);
+  copyBtn.addEventListener('click',()=>{
+    if(!rawOutput)return;
+    navigator.clipboard.writeText(rawOutput).then(()=>{copyBtn.textContent='✅ Copied!';setTimeout(()=>copyBtn.textContent='📋 Copy',2000)}).catch(()=>{
+      const t=document.createElement('textarea');t.value=rawOutput;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);
+      copyBtn.textContent='✅ Copied!';setTimeout(()=>copyBtn.textContent='📋 Copy',2000);
     });
   });
 
-  regenBtn.addEventListener('click', () => { if (lastPrompt) generate(lastPrompt); });
+  regenBtn.addEventListener('click',()=>{if(lastPrompt)generate(lastPrompt);});
 
-  async function generate(topic) {
-    lastPrompt = topic;
-    errorBanner.classList.remove('visible');
+  async function generate(topic){
+    lastPrompt=topic;
+    errBanner.classList.remove('visible');
     actionRow.classList.remove('visible');
     outputCard.classList.add('visible');
-    outputBody.innerHTML = '';
+    outputBody.innerHTML='';
     loadingWrap.classList.add('visible');
-    generateBtn.disabled = true;
-    generateLbl.textContent = 'Generating...';
+    generateBtn.disabled=true;
+    generateLbl.textContent='Generating...';
 
-    const viralSuffix = isViral
-      ? '\n\nMAKE IT extremely viral with a strong curiosity gap and emotional hook. Every line should demand the viewer to keep watching.'
-      : '';
+    const viralSuffix=isViral?'\n\nMAKE IT extremely viral with a strong curiosity gap and emotional hook. Every line should demand the viewer to keep watching.':'';
+    const prompt=(isChar?buildChar(topic):buildStory(topic))+viralSuffix;
 
-    const fullPrompt = (isCharMode
-      ? buildCharPrompt(topic)
-      : buildStoryPrompt(topic)) + viralSuffix;
-
-    try {
-      // ✅ Panggil backend kita sendiri — API key tidak terekspos ke user
-      const res = await fetch('/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input: fullPrompt })
-      });
-
-      if (!res.ok) throw new Error('API error');
-
-      const data = await res.json();
-      rawOutput = data.output || '';
-      if (!rawOutput) throw new Error('Empty response');
-
+    try{
+      const res=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({input:prompt})});
+      if(!res.ok)throw new Error('err');
+      const data=await res.json();
+      rawOutput=data.output||'';
+      if(!rawOutput)throw new Error('empty');
       loadingWrap.classList.remove('visible');
       renderOutput(rawOutput);
-      outputBadge.textContent = isCharMode ? '🎭 Character Ready' : '✨ Hook Ready';
+      outputBadge.textContent=isChar?'🎭 Character Ready':'✨ Hook Ready';
       actionRow.classList.add('visible');
-      outputCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    } catch (e) {
+      outputCard.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }catch(e){
       loadingWrap.classList.remove('visible');
       outputCard.classList.remove('visible');
-      errorBanner.classList.add('visible');
-    } finally {
-      generateBtn.disabled = false;
-      generateLbl.textContent = 'Generate Hook';
+      errBanner.classList.add('visible');
+    }finally{
+      generateBtn.disabled=false;
+      generateLbl.textContent='Generate Hook';
     }
   }
 
-  function renderOutput(text) {
-    const lines = text.split('\n');
-    let html = '';
-    const headings = /^(Hook|Concept|Twist|Video Idea|Style|Name|Archetype|Power|Backstory|Fatal Flaw|Key Scene):?$/i;
-
-    lines.forEach(line => {
-      const t = line.trim();
-      if (!t) { html += '\n'; return; }
-      if (headings.test(t)) {
-        html += `<span class="section-title">${esc(t)}</span>`;
-      } else {
-        html += `<span class="section-content">${esc(t)}</span>\n`;
-      }
+  function renderOutput(text){
+    const headings=/^(Hook|Concept|Twist|Video Idea|Style|Name|Archetype|Power|Backstory|Fatal Flaw|Key Scene):?$/i;
+    let html='';
+    text.split('\n').forEach(line=>{
+      const t=line.trim();
+      if(!t){html+='\n';return;}
+      if(headings.test(t))html+=`<span class="stitle">${esc(t)}</span>`;
+      else html+=`<span class="scontent">${esc(t)}</span>\n`;
     });
-
-    outputBody.innerHTML = html;
+    outputBody.innerHTML=html;
   }
 
-  function esc(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-  function buildStoryPrompt(topic) {
-    return `You are HookManga AI. Generate a highly viral manga-style short story idea for TikTok/Reels.
+  function buildStory(t){return`You are HookManga AI. Generate a highly viral manga-style short story idea for TikTok/Reels.\n\nTopic: ${t}\n\nReturn EXACTLY in this format:\n\nHook:\n[short emotional phrase, max 10 words]\n\nConcept:\n[1 sentence story idea]\n\nTwist:\n[unexpected plot twist]\n\nVideo Idea:\n1. [scene]\n2. [scene]\n3. [scene]\n\nStyle:\n- emotional\n- dramatic\n- curiosity-driven\n- TikTok optimized\n- anime storytelling`;}
 
-Topic: ${topic}
+  function buildChar(t){return`You are HookManga AI. Generate a viral manga character concept for TikTok/Reels.\n\nTopic: ${t}\n\nReturn EXACTLY in this format:\n\nName:\n[character name]\n\nArchetype:\n[1 sentence archetype]\n\nPower:\n[their unique power or ability]\n\nBackstory:\n[2 sentence tragic or dramatic backstory]\n\nFatal Flaw:\n[what makes them compelling / vulnerable]\n\nKey Scene:\n1. [opening scene]\n2. [power reveal]\n3. [emotional twist]`;}
+})();
 
-Return EXACTLY in this format:
-
-Hook:
-[short emotional phrase, max 10 words]
-
-Concept:
-[1 sentence story idea]
-
-Twist:
-[unexpected plot twist]
-
-Video Idea:
-1. [scene]
-2. [scene]
-3. [scene]
-
-Style:
-- emotional
-- dramatic
-- curiosity-driven
-- TikTok optimized
-- anime storytelling`;
-  }
-
-  function buildCharPrompt(topic) {
-    return `You are HookManga AI. Generate a viral manga character concept for TikTok/Reels.
-
-Topic: ${topic}
-
-Return EXACTLY in this format:
-
-Name:
-[character name]
-
-Archetype:
-[1 sentence archetype]
-
-Power:
-[their unique power or ability]
-
-Backstory:
-[2 sentence tragic or dramatic backstory]
-
-Fatal Flaw:
-[what makes them compelling / vulnerable]
-
-Key Scene:
-1. [opening scene]
-2. [power reveal]
-3. [emotional twist]`;
-  }
-
+// ── SCROLL REVEAL ──
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}});
+  },{threshold:.1});
+  els.forEach(e=>obs.observe(e));
 })();
 </script>
 </body>
