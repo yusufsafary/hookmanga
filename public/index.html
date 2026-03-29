@@ -9,55 +9,88 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&family=Shippori+Mincho:wght@400;700;800&display=swap" rel="stylesheet">
 
 <!-- ═══════════════════════════════════════
-     FIREBASE — Fill from Firebase Console
-     Project Settings → Your Apps → Web App
+     SUPABASE — Fill from Supabase Dashboard
+     Project Settings → API
      ═══════════════════════════════════════ -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  // ▼ REPLACE WITH YOUR FIREBASE CONFIG ▼
-  const firebaseConfig = {
-    apiKey:            "YOUR_API_KEY",
-    authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId:         "YOUR_PROJECT_ID",
-    storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId:             "YOUR_APP_ID"
-  };
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ▼ REPLACE WITH YOUR SUPABASE CONFIG ▼
+  const SUPABASE_URL  = 'https://letpyoccvmeeffkoheyh.supabase.co';
+  const SUPABASE_ANON = 'sb_publishable_-q9oFGgodKnlaKWD1-CpOA_rSag8zJH';
   // ▲ END CONFIG ▲
 
-  const app      = initializeApp(firebaseConfig);
-  const auth     = getAuth(app);
-  const provider = new GoogleAuthProvider();
+  const _supa = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-  onAuthStateChanged(auth, user => {
-    window.__hmUser = user;
-    renderAuthState(user);
-  });
+  // ── Cek session saat halaman dibuka ──
+  (async () => {
+    const { data: { session } } = await _supa.auth.getSession();
+    window.__hmUser = session?.user || null;
+    renderAuthState(window.__hmUser);
 
+    // Kalau user baru balik dari magic link, session langsung terbaca
+    _supa.auth.onAuthStateChange((_event, session) => {
+      window.__hmUser = session?.user || null;
+      renderAuthState(window.__hmUser);
+      if (_event === 'SIGNED_IN') closeAuthModal();
+    });
+  })();
+
+  // ── Kirim Magic Link ──
   window.hmLogin = async () => {
-    try { await signInWithPopup(auth, provider); closeAuthModal(); }
-    catch(e) { console.error(e); }
-  };
-  window.hmLogout = async () => { await signOut(auth); };
+    const emailEl = document.getElementById('authEmailInput');
+    const msgEl   = document.getElementById('authMsg');
+    const email   = emailEl?.value?.trim();
 
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showAuthMsg('⚠️ Masukkan email yang valid.', 'error');
+      return;
+    }
+
+    showAuthMsg('⏳ Mengirim magic link...', 'info');
+
+    const { error } = await _supa.auth.signInWithOtp({
+      email,
+      options: { emailRedirectTo: 'https://hookmanga.xyz' }
+    });
+
+    if (error) {
+      showAuthMsg('❌ Gagal kirim. Coba lagi.', 'error');
+    } else {
+      showAuthMsg('✅ Cek inbox kamu! Klik link di email untuk login.', 'success');
+      emailEl.value = '';
+    }
+  };
+
+  // ── Sign Out ──
+  window.hmLogout = async () => {
+    await _supa.auth.signOut();
+  };
+
+  // ── Render nav state ──
   function renderAuthState(user) {
-    const loginBtn   = document.getElementById('navLoginBtn');
-    const userChip   = document.getElementById('navUserChip');
-    const userAvatar = document.getElementById('navUserAvatar');
-    const userName   = document.getElementById('navUserName');
+    const loginBtn  = document.getElementById('navLoginBtn');
+    const userChip  = document.getElementById('navUserChip');
+    const userAvatar= document.getElementById('navUserAvatar');
+    const userName  = document.getElementById('navUserName');
     if (!loginBtn) return;
     if (user) {
       loginBtn.style.display = 'none';
       userChip.style.display = 'flex';
-      userAvatar.src         = user.photoURL || '';
-      userName.textContent   = user.displayName?.split(' ')[0] || 'User';
+      userAvatar.src         = user.user_metadata?.avatar_url || '';
+      userName.textContent   = user.email?.split('@')[0] || 'User';
     } else {
       loginBtn.style.display = 'flex';
       userChip.style.display = 'none';
     }
+  }
+
+  // ── Helper pesan auth ──
+  function showAuthMsg(text, type) {
+    const el = document.getElementById('authMsg');
+    if (!el) return;
+    el.textContent = text;
+    el.style.display = 'block';
+    el.style.color = type === 'error' ? 'var(--red)' : type === 'success' ? '#16a34a' : 'var(--sub)';
   }
 </script>
 
@@ -431,17 +464,27 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
     <span class="auth-modal-kamon">⛩</span>
     <span class="auth-modal-ja">ログイン · Sign In</span>
     <div class="auth-modal-title">Welcome to<br><span>HookManga</span></div>
-    <p class="auth-modal-sub">Sign in with Google to start creating viral manga hooks. Free &amp; takes one click.</p>
-    <button class="btn-google" onclick="window.hmLogin()">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
-      Continue with Google
-    </button>
-    <button class="auth-skip" onclick="closeAuthModal()">Skip for now, generate without login</button>
+    <p class="auth-modal-sub">Masukkan email kamu — kami kirim magic link langsung ke inbox. Tanpa password.</p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;width:100%">
+      <input
+        type="email"
+        id="authEmailInput"
+        placeholder="nama@email.com"
+        autocomplete="email"
+        style="width:100%;padding:13px 16px;border:1.5px solid var(--border2);border-radius:12px;font-family:var(--font-body);font-size:15px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s"
+        onfocus="this.style.borderColor='var(--red)'"
+        onblur="this.style.borderColor='var(--border2)'"
+        onkeydown="if(event.key==='Enter') window.hmLogin()"
+      />
+      <button class="btn-google" onclick="window.hmLogin()" style="justify-content:center;gap:10px;background:var(--grad);color:#fff;border:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Kirim Magic Link
+      </button>
+    </div>
+
+    <p id="authMsg" style="display:none;margin-top:12px;font-size:13px;text-align:center;line-height:1.5"></p>
+    <button class="auth-skip" onclick="closeAuthModal()">Skip, generate tanpa login</button>
   </div>
 </div>
 
