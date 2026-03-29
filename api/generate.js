@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.BLUESMINDS_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
+        model: 'anthropic/claude-haiku-4-5',
         messages: [{ role: 'user', content: input.trim() }],
         max_tokens: 800
       })
