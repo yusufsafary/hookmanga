@@ -1,5 +1,4 @@
 export default async function handler(req, res) {
-  // Hanya izinkan POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -8,11 +7,6 @@ export default async function handler(req, res) {
 
   if (!input || typeof input !== 'string' || input.trim().length === 0) {
     return res.status(400).json({ error: 'Input is required' });
-  }
-
-  // Batasi panjang input (keamanan)
-  if (input.length > 2000) {
-    return res.status(400).json({ error: 'Input too long' });
   }
 
   try {
@@ -36,12 +30,9 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-
-    // OpenAI-compatible response format
     const output = data.choices?.[0]?.message?.content || '';
 
     if (!output) {
-      console.error('Empty output from Bluesminds:', JSON.stringify(data));
       return res.status(502).json({ error: 'Empty response from API' });
     }
 
