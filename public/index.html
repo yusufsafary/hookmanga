@@ -150,32 +150,80 @@ section{position:relative;z-index:1}
 /* HERO */
 #hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:140px 24px 90px;position:relative;overflow:hidden;background:linear-gradient(180deg,#fff 0%,var(--bg) 100%)}
 .hero-glow{position:absolute;top:10%;left:50%;transform:translateX(-50%);width:800px;height:520px;background:radial-gradient(ellipse,rgba(191,26,26,.07) 0%,rgba(140,18,18,.03) 50%,transparent 70%);pointer-events:none;animation:heroGlow 6s ease-in-out infinite alternate}
-@keyframes heroGlow{from{opacity:.4}to{opacity:1}}
-.hero-kanji{font-family:var(--font-ja);font-size:clamp(120px,22vw,280px);font-weight:900;position:absolute;top:50%;left:50%;transform:translate(-50%,-52%);color:var(--red);opacity:.035;pointer-events:none;white-space:nowrap;letter-spacing:-8px;z-index:0;user-select:none;line-height:1}
-.hero-stripe{position:absolute;left:10%;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,rgba(191,26,26,.12),transparent);pointer-events:none}
-.hero-stripe-r{position:absolute;right:10%;top:0;bottom:0;width:3px;background:linear-gradient(180deg,transparent,rgba(191,26,26,.08),transparent);pointer-events:none}
-.hero-badge-ja{font-family:var(--font-ja);font-size:11px;letter-spacing:5px;color:var(--sub2);margin-bottom:16px;display:block;animation:fadeUp .55s ease both;position:relative;z-index:1}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--red-muted);border:1px solid var(--red-border);border-radius:20px;padding:6px 16px;font-size:11px;font-weight:700;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;animation:fadeUp .6s ease .05s both;position:relative;z-index:1}
-.hero-badge::before{content:'✦';font-size:9px}
-.hero-title{font-family:var(--font-ja);font-size:clamp(46px,8.5vw,100px);font-weight:900;line-height:1.0;letter-spacing:-1px;margin-bottom:10px;animation:fadeUp .7s ease .1s both;color:var(--text);position:relative;z-index:1}
-.hero-title span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-title-sub{font-family:var(--font-ja);font-size:clamp(12px,1.8vw,16px);font-weight:400;color:var(--sub);letter-spacing:6px;text-transform:uppercase;margin-bottom:24px;display:block;animation:fadeUp .7s ease .15s both;position:relative;z-index:1}
-.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--sub);max-width:520px;margin:0 auto 40px;font-weight:300;line-height:1.75;animation:fadeUp .7s ease .2s both;position:relative;z-index:1}
-.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;animation:fadeUp .7s ease .3s both;position:relative;z-index:1}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;cursor:pointer;font-family:var(--font-body);font-weight:700;font-size:15px;padding:14px 28px;text-decoration:none;transition:transform .12s,box-shadow .2s,opacity .15s;-webkit-tap-highlight-color:transparent}
-.btn:active{transform:scale(.97)}
-.btn-primary{background:var(--grad-shine);color:#fff;box-shadow:var(--glow)}
-.btn-primary:hover{box-shadow:0 6px 32px rgba(191,26,26,.35);transform:translateY(-2px)}
-.btn-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border2)}
-.btn-ghost:hover{background:rgba(0,0,0,.04)}
-.hero-stats{display:flex;gap:48px;justify-content:center;margin-top:64px;flex-wrap:wrap;animation:fadeUp .7s ease .4s both;position:relative;z-index:1}
-.stat{text-align:center}
-.stat-num{font-family:var(--font-ja);font-size:38px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
-.stat-label{font-size:11px;color:var(--sub);letter-spacing:1px;margin-top:6px;text-transform:uppercase}
-.stat-label-ja{font-family:var(--font-ja);font-size:10px;color:var(--sub2);display:block;margin-top:2px;letter-spacing:2px}
-.orynth-badge-wrap{display:flex;justify-content:center;margin-top:40px;animation:fadeUp .7s ease .5s both;position:relative;z-index:1}
-.orynth-badge-wrap a{display:inline-block;transition:opacity .2s,transform .2s}
-.orynth-badge-wrap a:hover{opacity:.85;transform:translateY(-2px)}
+/* ── HERO REDESIGN ── */
+#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 20px 60px;position:relative;overflow:hidden;background:#fff}
+
+/* manga halftone bg */
+#hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(191,26,26,.06) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0}
+/* red accent stripe top */
+#hero::after{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--grad);z-index:2}
+
+.hero-manga-panels{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.hmp{position:absolute;border:2px solid rgba(191,26,26,.08);background:rgba(191,26,26,.025)}
+.hmp-1{top:-20px;left:-30px;width:200px;height:280px;transform:rotate(-8deg)}
+.hmp-2{top:30px;right:-40px;width:160px;height:220px;transform:rotate(6deg)}
+.hmp-3{bottom:-40px;left:5%;width:240px;height:180px;transform:rotate(4deg)}
+.hmp-4{bottom:-20px;right:5%;width:180px;height:200px;transform:rotate(-5deg)}
+
+/* speed lines left/right */
+.hero-speed{position:absolute;top:0;bottom:0;width:120px;pointer-events:none;z-index:0}
+.hero-speed-l{left:0;background:linear-gradient(90deg,rgba(191,26,26,.04),transparent)}
+.hero-speed-r{right:0;background:linear-gradient(270deg,rgba(191,26,26,.04),transparent)}
+
+.hero-inner{position:relative;z-index:1;max-width:640px;width:100%}
+
+.hero-chapter{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-ja);font-size:10px;font-weight:700;letter-spacing:4px;color:var(--red);text-transform:uppercase;margin-bottom:20px;animation:fadeUp .5s ease both}
+.hero-chapter::before,.hero-chapter::after{content:'';width:24px;height:1.5px;background:var(--red);flex-shrink:0}
+
+.hero-title{font-family:var(--font-ja);font-size:clamp(42px,9vw,92px);font-weight:900;line-height:.95;letter-spacing:-2px;margin-bottom:20px;animation:fadeUp .6s ease .08s both;color:var(--text);position:relative}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:block}
+/* manga effect underline */
+.hero-title em::after{content:'';display:block;height:4px;background:var(--grad);border-radius:2px;margin-top:4px;width:70%;margin-left:auto;margin-right:auto;opacity:.4}
+
+.hero-sub{font-size:clamp(14px,2.2vw,17px);color:var(--sub);max-width:440px;margin:0 auto 36px;font-weight:300;line-height:1.7;animation:fadeUp .6s ease .16s both}
+
+/* genre pills row */
+.hero-genres{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;animation:fadeUp .6s ease .22s both}
+.hero-genre-pill{display:inline-flex;align-items:center;gap:5px;background:var(--card2);border:1px solid var(--border2);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:600;color:var(--sub);cursor:default;transition:all .2s;user-select:none}
+.hero-genre-pill:hover{border-color:var(--red-border);color:var(--red);background:var(--red-muted);transform:translateY(-2px)}
+
+.hero-cta{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;animation:fadeUp .6s ease .28s both;margin-bottom:48px}
+.btn-hero-main{background:var(--grad-shine);color:#fff;padding:15px 34px;font-size:16px;border-radius:12px;box-shadow:0 4px 24px rgba(191,26,26,.3);display:inline-flex;align-items:center;gap:10px;border:none;cursor:pointer;font-family:var(--font-body);font-weight:700;text-decoration:none;transition:transform .15s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.btn-hero-main:hover{transform:translateY(-3px);box-shadow:0 8px 36px rgba(191,26,26,.4)}
+.btn-hero-main:active{transform:scale(.97)}
+.btn-hero-ghost{background:transparent;color:var(--text);border:1.5px solid var(--border2);padding:15px 26px;font-size:15px;border-radius:12px;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:var(--font-body);font-weight:600;text-decoration:none;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.btn-hero-ghost:hover{background:var(--card2);border-color:var(--red-border)}
+
+/* animated hook preview card */
+.hero-preview{background:var(--card);border:1.5px solid var(--border2);border-radius:16px;padding:20px 24px;max-width:420px;margin:0 auto;box-shadow:0 8px 40px rgba(0,0,0,.08);animation:fadeUp .7s ease .36s both;text-align:left;position:relative;overflow:hidden}
+.hero-preview::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad)}
+.hp-label{font-size:9px;font-weight:700;color:var(--red);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.hp-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:hpPulse 1.4s ease-in-out infinite}
+@keyframes hpPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.hp-hook{font-family:var(--font-ja);font-size:17px;font-weight:800;color:var(--text);line-height:1.35;margin-bottom:12px;min-height:52px}
+.hp-meta{display:flex;gap:8px;flex-wrap:wrap}
+.hp-tag{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:11px;color:var(--sub);font-weight:500}
+
+/* stats bar */
+.hero-stats-bar{display:flex;gap:0;justify-content:center;animation:fadeUp .7s ease .44s both;background:var(--card2);border:1px solid var(--border);border-radius:14px;overflow:hidden;max-width:460px;margin:0 auto;margin-top:32px}
+.stat-bar-item{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--border);position:relative}
+.stat-bar-item:last-child{border-right:none}
+.stat-bar-num{font-family:var(--font-ja);font-size:22px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;display:block}
+.stat-bar-lbl{font-size:9px;color:var(--sub);letter-spacing:.5px;text-transform:uppercase;margin-top:3px;display:block}
+
+/* keep old classes for compat */
+.hero-glow,.hero-kanji,.hero-stripe,.hero-stripe-r,.hero-badge-ja,.hero-stats,.stat,.orynth-badge-wrap{display:none}
+.hero-badge{display:none}
+.hero-title-sub{display:none}
+.hero-actions{display:none}
+.hero-sub{display:none}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* hook rotator */
+@keyframes hookFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.hp-hook.animating{animation:hookFadeIn .4s ease}
+
 
 /* APP */
 #app{padding:90px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -332,39 +380,45 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
   .nav-links{display:none!important}.nav-mobile-btn{display:flex!important;align-items:center}
   .steps{grid-template-columns:1fr}.features-grid{grid-template-columns:1fr}
   .about-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr 1fr}
-  .hero-stats{gap:20px;justify-content:center}.roadmap{grid-template-columns:1fr 1fr}
+  .roadmap{grid-template-columns:1fr 1fr}
   .footer-bottom{flex-direction:column;gap:8px;text-align:center}
   #samplesGrid{grid-template-columns:1fr!important}
   #samplePanels{grid-template-columns:1fr 1fr!important}
   .app-wrap{padding:20px 16px}
   .pro-row{flex-direction:column}
   .btn-char,.toggle-wrap{width:100%}
-  #hero{padding:90px 16px 60px}
+  #hero{padding:80px 16px 50px}
+  .hero-inner{padding:0 4px}
+  .hero-chapter{font-size:9px;letter-spacing:3px}
+  .hero-title{font-size:clamp(38px,10vw,58px)!important;letter-spacing:-1px}
+  .hero-sub{font-size:14px;margin-bottom:20px}
+  .hero-genres{gap:6px}
+  .hero-genre-pill{font-size:11px;padding:4px 10px}
+  .hero-cta{flex-direction:column;align-items:stretch;gap:10px;max-width:100%}
+  .btn-hero-main,.btn-hero-ghost{width:100%;justify-content:center;text-align:center;padding:14px 20px;font-size:15px}
+  .hero-preview{padding:16px 16px;margin-bottom:16px}
+  .hp-hook{font-size:15px;min-height:44px}
+  .hero-stats-bar{max-width:100%;margin-top:16px}
+  .stat-bar-item{padding:10px 4px}
+  .stat-bar-num{font-size:18px}
+  .stat-bar-lbl{font-size:8px}
   .container{padding:0 16px}
   .container-sm{padding:0 16px}
   nav{padding:12px 16px}
   .chip{min-width:calc(50% - 4px);font-size:12px;padding:8px 10px}
-  .hero-actions{flex-direction:column;align-items:stretch;gap:10px;max-width:320px;margin:0 auto}
-  .hero-actions .btn{width:100%;text-align:center;justify-content:center}
-  .stat-num{font-size:26px}
   #mathCaptchaBox{flex-direction:column;gap:8px}
   #mathAnswer{width:100%;max-width:160px}
   .auth-modal,.beta-modal{padding:32px 20px;margin:12px}
   .about-grid .about-visual{display:none}
-  .beta-modal div[style*="display:flex"]{flex-direction:column}
-  .hero-stats .stat{flex:1;min-width:100px}
 }
 @media(max-width:480px){
   .footer-inner{grid-template-columns:1fr}.roadmap{grid-template-columns:1fr}
   nav{padding:10px 14px}
-  .btn{font-size:14px;padding:12px 20px}
   .app-wrap{padding:16px 14px;border-radius:14px}
   .section-title{font-size:clamp(26px,7vw,40px)!important}
-  .hero-title{font-size:clamp(34px,9vw,60px)!important}
   input[type="text"]{font-size:16px}
   #samplePanels{grid-template-columns:1fr!important}
-  .hero-stats{flex-direction:row;flex-wrap:wrap;gap:14px}
-  .hero-stats .stat{min-width:80px}
+  .hero-title{font-size:clamp(34px,9.5vw,52px)!important}
 }
 </style>
 </head>
@@ -449,29 +503,66 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-kanji">漫画</div>
-  <div class="hero-stripe"></div><div class="hero-stripe-r"></div>
+  <!-- manga panel borders bg -->
+  <div class="hero-manga-panels">
+    <div class="hmp hmp-1"></div>
+    <div class="hmp hmp-2"></div>
+    <div class="hmp hmp-3"></div>
+    <div class="hmp hmp-4"></div>
+  </div>
+  <div class="hero-speed hero-speed-l"></div>
+  <div class="hero-speed hero-speed-r"></div>
 
-  <div class="hero-badge">✦ Beta 2026 · AI-Powered</div>
-  <h1 class="hero-title">Create Viral<br><span>Manga Hooks</span><br>in Seconds</h1>
-  <span class="hero-title-sub">バイラル漫画フック生成 · Hook Generator</span>
-  <p class="hero-sub">Generate emotional story hooks, character concepts, and video ideas optimized for TikTok, Reels, and YouTube Shorts.</p>
-  <div class="hero-actions">
-    <a href="#app" class="btn btn-primary">⚡ Start Generating</a>
-    <a href="#how" class="btn btn-ghost">How It Works →</a>
+  <div class="hero-inner">
+    <!-- chapter label -->
+    <div class="hero-chapter">Chapter 01 · β Beta 2026</div>
+
+    <!-- title -->
+    <h1 class="hero-title">
+      Create Viral
+      <em>Manga Hooks</em>
+      in Seconds
+    </h1>
+
+    <p class="hero-sub">Generate emotional story hooks, character concepts, and video ideas for TikTok, Reels &amp; YouTube Shorts — powered by AI.</p>
+
+    <!-- genre pills -->
+    <div class="hero-genres">
+      <span class="hero-genre-pill">🌑 Dark</span>
+      <span class="hero-genre-pill">💘 Romance</span>
+      <span class="hero-genre-pill">⚡ Shonen</span>
+      <span class="hero-genre-pill">🌀 Isekai</span>
+    </div>
+
+    <!-- CTA buttons -->
+    <div class="hero-cta">
+      <a href="#app" class="btn-hero-main">⚡ Start Generating</a>
+      <a href="#samples" class="btn-hero-ghost">See Examples →</a>
+    </div>
+
+    <!-- live hook preview card -->
+    <div class="hero-preview">
+      <div class="hp-label"><div class="hp-dot"></div>Live Preview · AI生成サンプル</div>
+      <div class="hp-hook" id="heroHookText">He saved the kingdom. Then discovered he was the villain all along.</div>
+      <div class="hp-meta">
+        <span class="hp-tag" id="heroHookGenre">🌑 Dark</span>
+        <span class="hp-tag">Viral Mode</span>
+        <span class="hp-tag">✨ Hook</span>
+      </div>
+    </div>
+
+    <!-- stats bar -->
+    <div class="hero-stats-bar">
+      <div class="stat-bar-item"><span class="stat-bar-num">50K+</span><span class="stat-bar-lbl">Hooks Generated</span></div>
+      <div class="stat-bar-item"><span class="stat-bar-num">12K+</span><span class="stat-bar-lbl">Creators</span></div>
+      <div class="stat-bar-item"><span class="stat-bar-num">4</span><span class="stat-bar-lbl">Genres</span></div>
+      <div class="stat-bar-item"><span class="stat-bar-num">98%</span><span class="stat-bar-lbl">Satisfaction</span></div>
+    </div>
   </div>
-  <div class="hero-stats">
-    <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">Hooks Generated</div><span class="stat-label-ja">生成済み</span></div>
-    <div class="stat"><div class="stat-num">12K+</div><div class="stat-label">Monthly Creators</div><span class="stat-label-ja">月間クリエイター</span></div>
-    <div class="stat"><div class="stat-num">4</div><div class="stat-label">Manga Genres</div><span class="stat-label-ja">ジャンル</span></div>
-    <div class="stat"><div class="stat-num">98%</div><div class="stat-label">Satisfaction Rate</div><span class="stat-label-ja">満足度</span></div>
-  </div>
-  <div class="orynth-badge-wrap">
-    <a href="https://orynth.dev/projects/hookmanga-ai" target="_blank" rel="noopener">
-      <img src="https://orynth.dev/api/badge/hookmanga-ai?theme=light&style=default" alt="Featured on Orynth" width="260" height="80"/>
-    </a>
-  </div>
+
+  <!-- old elements kept hidden for compat -->
+  <div class="hero-glow"></div>
+  <div class="hero-kanji"></div>
 </section>
 
 <!-- SAMPLE RESULTS -->
@@ -823,6 +914,33 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
 </footer>
 
 <script>
+// ── HERO HOOK ROTATOR ──
+(function(){
+  const hooks=[
+    {text:"He saved the kingdom. Then discovered he was the villain all along.",genre:"🌑 Dark"},
+    {text:"She erased her memories to protect him. He spent 10 years searching anyway.",genre:"💘 Romance"},
+    {text:"Ranked last in the academy. Until the final exam revealed his true power.",genre:"⚡ Shonen"},
+    {text:"Reborn as the demon lord. But his soul still remembers who he used to love.",genre:"🌀 Isekai"},
+    {text:"They called her worthless. She called it a head start.",genre:"⚡ Shonen"},
+    {text:"His fatal flaw: everyone he saves eventually becomes his greatest enemy.",genre:"🌑 Dark"},
+  ];
+  let idx=0;
+  const el=document.getElementById('heroHookText');
+  const genre=document.getElementById('heroHookGenre');
+  if(!el) return;
+  setInterval(()=>{
+    idx=(idx+1)%hooks.length;
+    el.classList.add('animating');
+    setTimeout(()=>{
+      el.textContent=hooks[idx].text;
+      if(genre) genre.textContent=hooks[idx].genre;
+      el.classList.remove('animating');
+      el.classList.add('animating');
+      setTimeout(()=>el.classList.remove('animating'),400);
+    },200);
+  },3500);
+})();
+
 // ── MOBILE DRAWER ──
 function toggleDrawer(){
   const menu=document.getElementById('mobileMenu');
