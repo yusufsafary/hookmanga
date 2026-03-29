@@ -8,9 +8,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&family=Shippori+Mincho:wght@400;700;800&display=swap" rel="stylesheet">
 
-<!-- reCAPTCHA v2 -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 <!-- ═══════════════════════════════════════
      FIREBASE — Fill from Firebase Console
      Project Settings → Your Apps → Web App
@@ -94,8 +91,8 @@
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;line-height:1.6}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflow-x:hidden;line-height:1.6;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");pointer-events:none;z-index:0}
 
 /* NAV */
@@ -337,10 +334,32 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
   .about-grid{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr 1fr}
   .hero-stats{gap:24px}.roadmap{grid-template-columns:1fr 1fr}
   .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+  #samplesGrid{grid-template-columns:1fr!important}
+  .app-wrap{padding:20px 16px}
+  .pro-row{flex-direction:column}
+  .btn-char,.toggle-wrap{width:100%}
+  #hero{padding:100px 16px 70px}
+  .container{padding:0 16px}
+  .container-sm{padding:0 16px}
+  nav{padding:12px 16px}
+  .chip{min-width:calc(50% - 4px);font-size:12px;padding:8px 10px}
+  .hero-actions{flex-direction:column;align-items:center}
+  .hero-actions .btn{width:100%;max-width:280px}
+  .hero-stats{gap:16px}
+  .stat-num{font-size:28px}
+  #mathCaptchaBox{flex-direction:column;gap:8px}
+  #mathAnswer{width:120px}
+  .auth-modal,.beta-modal{padding:32px 20px}
+  .about-grid .about-visual{display:none}
 }
 @media(max-width:480px){
   .footer-inner{grid-template-columns:1fr}.roadmap{grid-template-columns:1fr}
-  nav{padding:12px 18px}.auth-modal,.beta-modal{padding:36px 24px}
+  nav{padding:10px 14px}
+  .btn{font-size:14px;padding:12px 20px}
+  .app-wrap{padding:16px 14px;border-radius:14px}
+  .section-title{font-size:clamp(26px,7vw,40px)!important}
+  .hero-title{font-size:clamp(36px,9vw,60px)!important}
+  input[type="text"]{font-size:16px}
 }
 </style>
 </head>
@@ -371,13 +390,14 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
 <div class="beta-overlay" id="betaOverlay">
   <div class="beta-modal">
     <div class="beta-seal">β</div>
-    <span class="beta-modal-ja">ベータ制限 · Beta Limit</span>
-    <div class="beta-modal-title">Beta Limit Reached</div>
-    <p class="beta-modal-sub">During Beta, each browser is limited to <strong>one free generation</strong>. This ensures quality and fair server load for all users.</p>
-    <div class="beta-modal-note">⚠ 1 generation per browser · ベータ版</div>
-    <p style="font-size:13px;color:var(--sub);font-weight:300;line-height:1.6">Follow on 𝕏 for full access updates, or wait for $HOOK token launch for unlimited generation.</p>
-    <div style="display:flex;gap:10px;margin-top:24px">
-      <a href="https://x.com/arthousebase" target="_blank" class="btn btn-primary" style="flex:1;font-size:13px;padding:12px">𝕏 Follow Updates</a>
+    <span class="beta-modal-ja">ベータ制限 · Beta Access</span>
+    <div class="beta-modal-title">$HOOK Token Required</div>
+    <p class="beta-modal-sub">During Beta Phase, generating requires holding a minimum of <strong>$50 in $HOOK tokens</strong> in your wallet. Each wallet + IP is entitled to <strong>5 project generations</strong>.</p>
+    <div class="beta-modal-note">🪙 Hold $50 $HOOK · 5 generations per wallet/IP</div>
+    <p style="font-size:13px;color:var(--sub);font-weight:300;line-height:1.6">Connect your Solana wallet to verify your $HOOK balance and unlock generation access during Beta Phase.</p>
+    <div style="display:flex;gap:10px;margin-top:24px;flex-wrap:wrap">
+      <button onclick="connectWalletAndVerify()" class="btn btn-primary" style="flex:1;font-size:13px;padding:12px">🔗 Connect Wallet</button>
+      <a href="https://x.com/arthousebase" target="_blank" class="btn btn-ghost" style="flex:1;font-size:13px;padding:12px">𝕏 Follow Updates</a>
       <button onclick="document.getElementById('betaOverlay').classList.remove('open')" class="btn btn-ghost" style="flex:1;font-size:13px;padding:12px">Close</button>
     </div>
   </div>
@@ -385,8 +405,7 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">🔥 HookManga <span class="nav-logo-ja">漫画フック</span></a>
-  <ul class="nav-links">
+  <a href="#" class="nav-logo" style="font-size:26px;gap:0">🔥</a>
     <li><a href="#app">Generator</a></li>
     <li><a href="#how">How It Works</a></li>
     <li><a href="#team">Team</a></li>
@@ -412,7 +431,7 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
   <div class="hero-glow"></div>
   <div class="hero-kanji">漫画</div>
   <div class="hero-stripe"></div><div class="hero-stripe-r"></div>
-  <span class="hero-badge-ja">バイラル漫画フック · AI生成 · Powered by Claude AI</span>
+
   <div class="hero-badge">✦ Beta 2026 · AI-Powered</div>
   <h1 class="hero-title">Create Viral<br><span>Manga Hooks</span><br>in Seconds</h1>
   <span class="hero-title-sub">バイラル漫画フック生成 · Hook Generator</span>
@@ -434,6 +453,58 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
   </div>
 </section>
 
+<!-- SAMPLE RESULTS -->
+<section id="samples" style="padding:80px 0;background:var(--bg);border-bottom:1px solid var(--border)">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:48px">
+      <span class="section-tag" style="justify-content:center">Sample Output · サンプル</span>
+      <span class="section-title-ja">生成サンプル · What HookManga Generates</span>
+      <h2 class="section-title" style="text-align:center">See What Gets<br><span style="background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Generated</span></h2>
+      <p class="section-sub" style="margin:0 auto;text-align:center">Real examples of hooks and characters generated by HookManga AI.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="reveal" id="samplesGrid">
+
+      <!-- Sample 1: Story Hook -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:14px 20px 0;display:flex;align-items:center;justify-content:space-between">
+          <span style="background:var(--grad);border-radius:6px;font-size:10px;font-weight:700;letter-spacing:1.5px;padding:4px 10px;text-transform:uppercase;color:#fff">✨ Hook Ready · 完成</span>
+          <span style="font-size:11px;color:var(--sub2);letter-spacing:1px">🌑 Dark · Viral Mode ON</span>
+        </div>
+        <div style="padding:16px 20px 20px;font-size:14px;line-height:1.85;color:#333;white-space:pre-wrap">
+<span style="color:var(--red);font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:4px">HOOK</span><span style="color:var(--text);font-size:15px">He saved the kingdom. Then discovered he was the villain all along.</span>
+
+<span style="color:var(--red);font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:14px;margin-bottom:4px">CONCEPT</span><span style="color:var(--text);font-size:15px">A hero who defeats the dark lord only to uncover memories proving he orchestrated every tragedy himself.</span>
+
+<span style="color:var(--red);font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:14px;margin-bottom:4px">TWIST</span><span style="color:var(--text);font-size:15px">His "sealed power" wasn't locked away to protect him — it was locked to protect everyone from him.</span>
+
+<span style="color:var(--red);font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:14px;margin-bottom:4px">VIDEO IDEA</span><span style="color:var(--text);font-size:15px">1. Victory celebration cut to frozen, haunted expression
+2. Flashback: his handwriting in the villain's forbidden tome
+3. Final frame: kingdom cheering as he walks away — alone</span></div>
+      </div>
+
+      <!-- Sample 2: Character -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)">
+        <div style="padding:14px 20px 0;display:flex;align-items:center;justify-content:space-between">
+          <span style="background:linear-gradient(135deg,#a0742a,#c8971e);border-radius:6px;font-size:10px;font-weight:700;letter-spacing:1.5px;padding:4px 10px;text-transform:uppercase;color:#fff">🎭 Character Ready · 完成</span>
+          <span style="font-size:11px;color:var(--sub2);letter-spacing:1px">💘 Romance · Isekai</span>
+        </div>
+        <div style="padding:16px 20px 20px;font-size:14px;line-height:1.85;color:#333;white-space:pre-wrap">
+<span style="color:var(--red);font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-bottom:4px">NAME</span><span style="color:var(--text);font-size:15px">Ren Akai · 赤井 蓮</span>
+
+<span style="color:var(--red);font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:14px;margin-bottom:4px">ARCHETYPE</span><span style="color:var(--text);font-size:15px">The Hollow King — reincarnated into the body of the realm's most feared tyrant, desperate to undo his predecessor's sins.</span>
+
+<span style="color:var(--red);font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:14px;margin-bottom:4px">POWER</span><span style="color:var(--text);font-size:15px">Absorbs the emotional pain of others, converting grief into devastating combat strength — but slowly loses himself.</span>
+
+<span style="color:var(--red);font-weight:700;font-size:10px;letter-spacing:2px;text-transform:uppercase;display:block;margin-top:14px;margin-bottom:4px">FATAL FLAW</span><span style="color:var(--text);font-size:15px">He can save everyone — except the one person he loves, whose happiness requires forgetting him entirely.</span></div>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:36px">
+      <a href="#app" class="btn btn-primary">⚡ Generate Your Own</a>
+    </div>
+  </div>
+</section>
+
 <!-- APP / GENERATOR -->
 <section id="app">
   <div class="container">
@@ -444,10 +515,10 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
     <div class="app-wrap reveal">
 
       <div class="beta-notice">
-        <span class="beta-notice-icon">⛩</span>
+        <span class="beta-notice-icon">🪙</span>
         <div class="beta-notice-text">
-          <strong>Beta Period · ベータ期間</strong>
-          1 free generation per browser. CAPTCHA required. Unlimited access unlocks with $HOOK token launch.
+          <strong>Beta Phase · ベータ期間 — $HOOK Token Required</strong>
+          Hold min. $50 in $HOOK tokens to generate. 5 generations per wallet address + IP. Connect wallet to verify.
         </div>
       </div>
 
@@ -463,18 +534,13 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
         <button class="chip" data-value="isekai overpowered hero reborn">🌀 Isekai · 異世界</button>
       </div>
 
-      <!-- reCAPTCHA v2 -->
+      <!-- MATH CAPTCHA -->
       <div class="captcha-wrap" id="captchaWrap">
         <span class="captcha-label">Verify you are human <span>· 人間確認</span></span>
-        <!--
-          ▼ REPLACE data-sitekey WITH YOUR reCAPTCHA v2 SITE KEY ▼
-          Get it at: https://www.google.com/recaptcha/admin/create
-          Choose: reCAPTCHA v2 → "I'm not a robot" Checkbox
-        -->
-        <div class="g-recaptcha"
-             data-sitekey="YOUR_RECAPTCHA_SITE_KEY"
-             data-theme="light"
-             data-size="normal">
+        <div id="mathCaptchaBox" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center">
+          <span id="mathQuestion" style="font-size:17px;font-weight:700;color:var(--text);letter-spacing:1px"></span>
+          <input type="number" id="mathAnswer" placeholder="Answer" style="width:90px;text-align:center;font-size:16px;padding:10px 12px;border-radius:8px;border:1.5px solid var(--border2);background:var(--card);color:var(--text);font-family:var(--font-body);outline:none" oninput="checkMathCaptcha()"/>
+          <span id="mathCheck" style="font-size:18px;min-width:20px"></span>
         </div>
       </div>
 
@@ -662,7 +728,16 @@ footer{border-top:1px solid var(--border);padding:56px 36px 36px;position:relati
 </footer>
 
 <script>
-// ── MODAL HELPERS ──
+// ── WALLET CONNECT (PLACEHOLDER — Phase Beta) ──
+window.connectWalletAndVerify = async function(){
+  // TODO: Integrate Phantom/Solflare wallet adapter
+  // Check: wallet holds >= $50 USD equivalent in $HOOK
+  // Check: walletAddress + userIP <= 5 generations used
+  // For now: show placeholder alert
+  alert('🔗 Wallet connect coming soon!\n\nPhase Beta: Connect your Solana wallet holding $50+ in $HOOK to unlock 5 project generations.\n\nVerification is per wallet address + IP.');
+};
+
+
 function openAuthModal(){ document.getElementById('authOverlay').classList.add('open') }
 function closeAuthModal(){ document.getElementById('authOverlay').classList.remove('open') }
 document.getElementById('authOverlay').addEventListener('click',function(e){if(e.target===this)closeAuthModal()});
@@ -677,7 +752,7 @@ function lockBeta(){
   const btn = document.getElementById('generateBtn');
   const lbl = document.getElementById('generateLabel');
   btn.classList.add('btn-used');
-  lbl.textContent = '🔒 Beta Limit Reached · 制限に達しました';
+  lbl.textContent = '🔒 Hold $50 $HOOK to Generate · ウォレット確認必要';
   document.getElementById('captchaWrap').classList.remove('visible');
   btn.onclick = () => document.getElementById('betaOverlay').classList.add('open');
 }
@@ -739,9 +814,9 @@ function lockBeta(){
       return;
     }
 
-    // Check CAPTCHA
+    // Check Math CAPTCHA
     let captchaResp='';
-    try{ captchaResp=grecaptcha.getResponse(); }catch(e){}
+    try{ captchaResp=window.__mathCaptchaSolved?'ok':''; }catch(e){}
     if(!captchaResp){
       captchaErr.classList.add('visible');
       setTimeout(()=>captchaErr.classList.remove('visible'),3500);
@@ -820,7 +895,42 @@ function lockBeta(){
   function buildChar(t){return`You are HookManga AI. Generate a viral manga character concept for TikTok/Reels.\n\nTopic: ${t}\n\nReturn EXACTLY in this format:\n\nName:\n[character name]\n\nArchetype:\n[1 sentence archetype]\n\nPower:\n[their unique power or ability]\n\nBackstory:\n[2 sentence tragic or dramatic backstory]\n\nFatal Flaw:\n[what makes them compelling / vulnerable]\n\nKey Scene:\n1. [opening scene]\n2. [power reveal]\n3. [emotional twist]`}
 })();
 
-// ── SCROLL REVEAL ──
+// ── MATH CAPTCHA ──
+(function(){
+  const ops = ['+', '×'];
+  function genQuestion(){
+    const op = ops[Math.floor(Math.random()*ops.length)];
+    let a,b,ans;
+    if(op==='+'){a=Math.floor(Math.random()*30)+5;b=Math.floor(Math.random()*30)+5;ans=a+b;}
+    else{a=Math.floor(Math.random()*9)+2;b=Math.floor(Math.random()*9)+2;ans=a*b;}
+    window.__mathAnswer=ans;
+    window.__mathCaptchaSolved=false;
+    const q=document.getElementById('mathQuestion');
+    if(q) q.textContent=`${a} ${op} ${b} = ?`;
+    const chk=document.getElementById('mathCheck');
+    if(chk) chk.textContent='';
+    const inp=document.getElementById('mathAnswer');
+    if(inp) inp.value='';
+  }
+  window.checkMathCaptcha=function(){
+    const inp=document.getElementById('mathAnswer');
+    const chk=document.getElementById('mathCheck');
+    if(!inp||!chk) return;
+    const val=parseInt(inp.value,10);
+    if(val===window.__mathAnswer){
+      window.__mathCaptchaSolved=true;
+      chk.textContent='✅';
+      inp.style.borderColor='var(--red)';
+    } else {
+      window.__mathCaptchaSolved=false;
+      chk.textContent= inp.value===''?'':'❌';
+      inp.style.borderColor=inp.value===''?'var(--border2)':'#e53935';
+    }
+  };
+  window.addEventListener('load', genQuestion);
+})();
+
+
 (function(){
   const els=document.querySelectorAll('.reveal');
   const obs=new IntersectionObserver(entries=>{
